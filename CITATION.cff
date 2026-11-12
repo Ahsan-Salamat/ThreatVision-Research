@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you cite the ThreatVision project, please use the authorship below."
+title: "ThreatVision: A Static-Analysis-Led Malware Triage Framework with Frequency-Domain Neural Features"
+authors:
+  - family-names: Salamat
+    given-names: Ahsan Ali
+    affiliation: The University of Faisalabad
+  - family-names: Manzoor
+    given-names: Usman
+    affiliation: The University of Faisalabad
+type: software
+abstract: "Documentation of the ThreatVision undergraduate software engineering project and post-submission investigation."
