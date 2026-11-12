@@ -12,9 +12,13 @@ Mohammed et al. (2021) describe MaleX as 1,044,394 PE executables, including 864
 
 The paper reports mean binary accuracy of 96% across its balanced MaleX experiments. Other reported results use different evaluation contexts, including an all-malicious test subset and an ROC curve that includes training and validation scores. These figures must not be presented as a single held-out benchmark result or as ThreatVision results; see [Experimental record](experimental-record.md) for details.
 
-## Diagnostic inputs
+## Post-submission diagnostic inputs
 
-The available project record describes probes with repetitive or constant bytes, random bytes, and structured or compressed PDFs. Such inputs help reveal how a model responds to selected byte patterns, but PDFs and random streams are outside the model's intended Windows PE triage domain. They are not a representative labeled test set. The observed score differences do not establish a population false-positive rate or prove sensitivity to entropy.
+The supplied measurements contain ten rows labeled benign PE, twenty transformed files derived from two of those PEs, six out-of-domain probes, eight synthetic random streams, and two synthetic constant streams. The CSV records SHA-256 hashes, but the source manifest, label verification, original transformation inputs, and random seeds are not supplied. The transformed rows are dependent on their two source PEs; the remaining rows' independence is not established. No known-malicious PE appears in the table.
+
+PDFs, random byte streams, constant streams, and the synthetic `MZ`-plus-random input are diagnostic probes rather than representative Windows PE evaluation cases. A PE signature or parser flag on a synthetic byte stream does not make it a valid benign or malicious PE example. These observations cannot estimate population error rates or establish that entropy caused a neural score.
+
+The sample-level measurement CSV is kept outside the public repository pending confirmation of source-data and derived-measurement redistribution terms. Aggregate results and their limitations appear in the [Experimental record](experimental-record.md).
 
 ## Dataset governance for future work
 

@@ -36,6 +36,8 @@ where `α(0)=√(1/256)` and `α(k)=√(2/256)` for `k>0`. The implementation ap
 
 The separate static-analysis path extracts PE headers and sections, imports, section and global entropy, strings, hashes, and selected opcode features. The neural model receives only the transformed image. It does not receive the static features as a learned fused tensor; fusion occurs later in the heuristic scorer.
 
+The sigmoid output is reported as a neural score, not a calibrated probability. Static-analysis criteria determine the final malware/benign label; neural inference can adjust the numeric threat score by at most five points. The rule weights and thresholds have not been calibrated against an independent labeled evaluation set.
+
 ## Interpretation limits
 
-The frequency image does not directly encode program intent. Packing, compression, padding, file format, and source distribution can influence byte patterns. Prior work has shown that static malware classifiers can learn packer-related signals that do not generalize to unseen packers [2]. Whether this particular model uses entropy or other shortcuts remains a hypothesis; the available probes do not establish causality. A controlled evaluation is proposed in [Future research](future-research.md).
+The frequency image does not directly encode program intent. Packing, compression, padding, file format, and source distribution can influence byte patterns. Prior work has shown that static malware classifiers can learn packer-related signals that do not generalize to unseen packers [2]. The available pilot shows different score changes for overlays on two source files, but each overlay changes multiple properties. Whether this model uses entropy or another shortcut remains untested. A controlled evaluation is proposed in [Future research](future-research.md).

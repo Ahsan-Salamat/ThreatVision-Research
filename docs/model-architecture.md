@@ -2,7 +2,7 @@
 
 ## Deployed artifact
 
-The deployed inference artifact is `threatvision_v01.keras`. Its recorded topology uses a MobileNetV2 backbone (`mobilenetv2_1.00_224`), a 224 × 224 × 1 float input normalized to `[0,1]`, and one sigmoid output interpreted by the application as a malware score. The artifact has 2,424,196 total parameters; approximately 1.51 million were reported trainable during phase-two fine-tuning.
+The deployed inference artifact is `threatvision_v01.keras`. Its serialized configuration identifies a MobileNetV2 backbone (`mobilenetv2_1.00_224`), a 224 × 224 × 1 float input normalized to `[0,1]`, and one sigmoid output interpreted by the application as a neural score. The archive metadata records Keras 3.14.1 and a save time of 2026-05-15. Counts recomputed from serialized layer shapes and trainability flags are 2,422,084 total parameters, 1,512,580 trainable, and 909,504 non-trainable. Seventeen of the backbone's 154 nested layers are marked trainable. The earlier 2,424,196 total is unsupported; the reason for the discrepancy is not established.
 
 ## Layer sequence
 
@@ -14,7 +14,7 @@ The deployed inference artifact is `threatvision_v01.keras`. Its recorded topolo
 6. Global average pooling to 1,280 features.
 7. Dropout (0.4), dense 128-unit ReLU layer, dropout (0.2), and dense sigmoid output.
 
-The checkpoint is not included in this repository. This topology does not provide its weights or training data and is not sufficient to reproduce the model's training or evaluation.
+The checkpoint is not included in this repository. Its top-level `compile_config` records Adam with a learning rate near `5 × 10⁻⁶`, binary cross-entropy, and accuracy, ROC AUC, precision, and recall metrics. These saved settings do not provide epoch histories, dataset provenance, or the complete training process. A debugging script references `phase2_best.keras`, but that file is unavailable; no artifact hash or export record establishes it as the source of `threatvision_v01.keras`.
 
 ## Intended use and decision authority
 

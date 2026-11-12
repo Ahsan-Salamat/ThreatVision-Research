@@ -1,6 +1,6 @@
 # Figures
 
-Figures 1–5 describe the implemented workflow; Figure 6 presents proposed research. Figures 1–6 are Mermaid diagrams authored for this repository. The two PNGs in `assets/` are illustrative feature images from the project materials, not performance charts or labeled evaluation examples. Their redistribution rights have not been confirmed.
+Figures 1–5 describe the implemented workflow; Figure 6 presents proposed research. All six Mermaid diagrams were authored for this repository. No screenshots or sample images are included.
 
 ## Figure 1. System architecture
 
@@ -104,28 +104,14 @@ sequenceDiagram
 
 ```mermaid
 flowchart TD
-    A[Lawful datasets with documented provenance] --> B[Review labels and deduplicate]
-    B --> C[Group by family, source, and time]
-    C --> D[Freeze time-aware partitions]
-    D --> E[Control entropy, packing, and file format]
-    E --> F[Compare static, image, byte, and hybrid baselines]
-    F --> G[Ablate transforms and signal groups]
-    G --> H[Pre-register metrics and thresholds]
-    H --> I[Report calibration, intervals, and subgroup errors]
-    I --> J[Assess robustness and explanation stability]
-    J --> K[Publish safe metadata and reproducibility materials]
+    A[Recover checkpoint and preprocessing provenance] --> B[Verify a simple statistical baseline]
+    B --> C[Run paired controlled perturbations]
+    C --> D[Compare raw bigram and DCT representations]
+    D --> E[Evaluate static-only and combined systems on shared splits]
+    E --> F[Report operating-point intervals and subgroup errors]
+    F --> G{Are current lawful data suitable?}
+    G -->|Yes| H[Continue controlled evaluation]
+    G -->|No| I[Plan data reconstruction with documented rights]
 ```
 
 *Caption: Proposed study design only. None of these experiments has been completed or validated for ThreatVision.*
-
-## Illustrative feature images
-
-The following project images show feature appearance only. They are not labeled malware/benign examples and do not show model outputs or performance. Redistribution permission for these images has not been confirmed.
-
-![Illustrative high-entropy feature image; no class label or model result is implied.](../assets/high-entropy-example.png)
-
-*Caption: Example feature image identified in the project materials as high entropy. The caption does not imply a malware label or a model score.*
-
-![Illustrative structured feature image; no class label or model result is implied.](../assets/structured-example.png)
-
-*Caption: Example structured feature image from the project materials. The caption does not imply a malware label or a model score.*

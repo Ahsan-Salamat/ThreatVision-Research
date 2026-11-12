@@ -1,15 +1,12 @@
 cff-version: 1.2.0
-message: "If you cite the ThreatVision project, please use the authorship below."
-title: "ThreatVision: Malware Triage with Static Analysis and Frequency-Domain Features"
+message: "If you cite this repository and the ThreatVision system it documents, please use the authorship below."
+title: "ThreatVision-Research: Malware Triage with Static Analysis and Frequency-Domain Features"
 authors:
   - family-names: Salamat
     given-names: Ahsan Ali
     affiliation: The University of Faisalabad
-  - family-names: Manzoor
-    given-names: Usman
-    affiliation: The University of Faisalabad
 type: software
-abstract: "Public documentation of the collaborative ThreatVision undergraduate project and its post-submission investigation."
+abstract: "Research documentation for ThreatVision, a malware-triage system whose technical architecture, implementation, and integrations were independently developed by Ahsan Ali Salamat. Includes a limited post-submission diagnostic pilot; it does not report a malware-detection benchmark or validated performance."
 url: "https://github.com/Ahsan-Salamat/ThreatVision-Research"
 repository-code: "https://github.com/Ahsan-Salamat/ThreatVision-Research"
 date-released: "2026-11-12"

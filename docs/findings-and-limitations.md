@@ -1,35 +1,33 @@
 # Findings and Limitations
 
-## What the available observations show
+## Findings from the diagnostic pilot
 
-Selected probes produced different neural scores: pseudo-random bytes and compressed PDF content received high scores, while a structured text PDF and constant-byte input received low scores. This is evidence of the recorded outputs for those inputs only. It is not an estimate of error rates or deployment performance. The available record lacks repeated trials, a complete protocol, representative sampling, and uncertainty estimates.
+The supplied CSV records 46 distinct file hashes: 10 inputs labeled benign PE, 20 transformed files derived from two of those PEs, six out-of-domain probes, eight synthetic random streams, and two synthetic constant streams. The ten PE rows have mean neural score 0.2166 (sample SD 0.1707), with nine below 0.50. These are descriptive values for selected files, not estimates from a representative population.
 
-## Intended inputs and diagnostic probes
+Byte shuffling preserved file size and the recorded Shannon entropy for two PE inputs, while both neural scores fell. This shows sensitivity to ordering under those interventions. It does not identify the learned feature or establish semantic malware recognition. Overlay results varied by source: the score rose from 0.4600 to 0.9990 for `cli-64`, but the `windows-kill` score peaked at 0.2534 before falling to 0.1476. Three of eight overlays received a final malware label. Since overlays also change size, entropy, and frequency features, the study does not isolate entropy as the cause.
 
-ThreatVision was designed for Windows PE triage, although the local training distribution is not documented. The deployed transform can process arbitrary bytes, and the upload path accepts some non-PE formats. The PDF and random-byte inputs were diagnostic probes outside the model's intended PE domain. Their scores cannot be counted as false positives in an operational or statistical sense.
+Scores on random streams were uniformly high in this sample, but the probes are synthetic and outside the intended Windows PE domain. Null padding and repeated content produced little or no change in the recorded scores. The pooled Spearman correlation between size and score is approximately −0.0691, but it combines dependent transformations and unrelated input types. Neither this correlation nor the noise-size series rules out a size effect.
 
-## Shortcut-learning hypothesis
+## What this study does not establish
 
-One possible explanation is that the CNN responds to entropy or spectral dispersion that correlates with labels in its training data. The selected scores are compatible with that hypothesis but do not identify a causal feature. Packing, file format, data source, label confounding, preprocessing behavior, and checkpoint lineage are also unresolved. Shortcut learning has not been demonstrated for ThreatVision, and dataset noise has not been established as the sole cause.
+The pilot includes no known-malicious PE examples and no independently verified sample labels. It is not a balanced detection benchmark. The 20 transformed observations are clustered on only two PE inputs, and random-stream generation seeds and source relationships are not recorded. Reported p-values that treat all rows as independent are not used. The CSV supplies measurements and hashes, but no source manifest, original overlay files, or runnable program reproducing all 46 rows.
 
-## Missing data and evaluation evidence
+No accuracy, ROC-AUC, precision, recall, F1, calibrated probability, operating threshold, or population false-positive rate can be inferred. A sigmoid output is called a neural score; calibration has not been evaluated. The outputs on selected benign and synthetic inputs do not establish deployment reliability.
 
-The local training source, acquisition dates, label process, sample counts, duplicate handling, and split manifest are not documented. Training histories, independent holdout results, prediction-level outputs, threshold calibration, and external-dataset evaluation are also unavailable. The repository makes no local accuracy, ROC-AUC, precision, recall, F1, false-positive-rate, or calibrated-threshold claim. Literature results for MaleX cannot fill these gaps.
+## Model and data provenance
 
-## Static analysis and decision logic
+The deployed archive's configuration identifies a MobileNetV2 model. It records Keras 3.14.1 and a save time of 2026-05-15. Counts recomputed from its serialized layer shapes are 2,422,084 total parameters (1,512,580 trainable and 909,504 non-trainable), with 17 of 154 nested backbone layers marked trainable. The earlier 2,424,196 figure is unsupported; its cause is not established. The saved top-level `compile_config` records Adam near `5 × 10⁻⁶`, binary cross-entropy, and accuracy, ROC AUC, precision, and recall. A script references a historical `phase2_best.keras` checkpoint, but the file is absent and the deployed artifact's lineage is unestablished.
 
-The application is pre-execution and cannot observe runtime unpacking, memory-only payloads, process hollowing after launch, or other behavior that requires execution. Its fusion scorer depends on PE structure, so non-PE inputs may lack relevant signals. Imports and section indicators are heuristics, not proof of malicious behavior. The static weights and thresholds have not been independently calibrated. Static criteria determine the final binary label; the CNN can adjust the numerical score by at most five points, but this design does not establish that either signal is accurate.
+Training scripts, dataset acquisition records, label procedures, sample counts, split manifests, training histories, and model-selection records are unavailable. It is not established that the local checkpoint was trained on MaleX. Published results from Mohammed et al. (2021) describe that paper's dataset and protocol, not ThreatVision.
 
-## Model and interface
+## Static decision system and intended use
 
-The deployed artifact is MobileNetV2-based. SE-ResNet is a literature architecture, not a deployed ThreatVision checkpoint. Family labels are rule-based profiles rather than validated multi-class predictions. The interface heatmap is a CSS illustration; the backend does not compute Grad-CAM or another gradient attribution. The local inference threshold is reported as 0.50, but no calibration evidence is available.
+Static analysis determines the final malware/benign label; neural inference can adjust the numeric threat score by at most five points. Three overlay rows and one synthetic `MZ`-plus-random row in the CSV received a malware final label. These outcomes demonstrate neither effective mitigation nor reliable detection. The static weights and thresholds are hand-set project heuristics and have not been calibrated on a verified labeled corpus. Static indicators such as imports and entropy can also occur in benign software.
 
-## Threats to validity
+The system is a pre-execution triage prototype. It cannot observe runtime unpacking or behavior that occurs only after execution. The deployed model's training domain is undocumented, and the transform's ability to accept arbitrary bytes does not validate non-PE use. Family labels are rule-based profiles. The interface heatmap is a CSS illustration, not Grad-CAM or a model explanation.
 
-- **Construct validity:** A threat score and a malware label represent different concepts; a high score does not establish malicious intent.
-- **Internal validity:** Missing training and split records prevent attributing the observed scores to one feature or cause.
-- **External validity:** The selected probes do not represent Windows PE deployment populations or current malware.
-- **Conclusion validity:** No independent metrics or uncertainty estimates support performance comparisons.
-- **Reproducibility:** The public materials describe the preprocessing and model topology, but omit weights, training data, training history, and complete evaluation artifacts.
+## Reproducibility and next step
 
-The engineering phase is complete for practical reasons. The scientific questions remain open; proposed follow-up work is described in [Future research](future-research.md).
+The public repository omits source code, model weights, original test binaries, training data, the 46-row sample table, and the experiment program. Sample-level measurements remain private pending confirmation of redistribution rights. The current record therefore supports an account of engineering and an exploratory pilot, but not independent reproduction.
+
+The next study should first recover model and preprocessing provenance, then compare simple file statistics, raw bigrams, DCT features, and static-only and combined systems on a common, lawful, labeled split. It should control source, family, time, packing, and duplicate structure and report uncertainty at relevant false-positive rates. The [future research plan](future-research.md) defines falsifiable steps.
