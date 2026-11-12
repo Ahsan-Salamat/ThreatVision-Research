@@ -1,12 +1,12 @@
-# Deny by default; public candidates are explicitly allowed below.
+# Deny by default; the public documentation files below are explicitly allowed.
 *
 !.gitignore
 !README.md
 !CITATION.cff
 !references.bib
-!PUBLIC_FILE_ALLOWLIST.md
 !docs/
 !docs/dataset-provenance.md
+!docs/experimental-record.md
 !docs/figures.md
 !docs/findings-and-limitations.md
 !docs/future-research.md
@@ -19,7 +19,6 @@
 !docs/research-prospectus.md
 !docs/research-prospectus.docx
 !docs/system-architecture.md
-!docs/experimental-record.md
 !assets/
 !assets/high-entropy-example.png
 !assets/structured-example.png

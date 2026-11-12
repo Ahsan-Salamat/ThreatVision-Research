@@ -1,35 +1,35 @@
 # Findings and Limitations
 
-## Observed behavior
+## What the available observations show
 
-The available audit records selected probes in which random bytes and a compressed PDF received high neural malware scores, while a structured text PDF and constant-byte input received low scores. This is a verified report that those selected probes were run, not a verified estimate of model performance. The audit does not provide repeated trials, representative sampling, confidence intervals, or a complete protocol.
+Selected probes produced different neural scores: pseudo-random bytes and compressed PDF content received high scores, while a structured text PDF and constant-byte input received low scores. This is evidence of the recorded outputs for those inputs only. It is not an estimate of error rates or deployment performance. The available record lacks repeated trials, a complete protocol, representative sampling, and uncertainty estimates.
+
+## Intended inputs and diagnostic probes
+
+ThreatVision was designed for Windows PE triage, although the local training distribution is not documented. The deployed transform can process arbitrary bytes, and the upload path accepts some non-PE formats. The PDF and random-byte inputs were diagnostic probes outside the model's intended PE domain. Their scores cannot be counted as false positives in an operational or statistical sense.
 
 ## Shortcut-learning hypothesis
 
-One possible explanation is that the CNN responds to entropy or broadband spectral dispersion that correlates with labels in its training data. The observed outputs are consistent with that possibility, but they do not establish a causal mechanism. Dataset noise has not been proven to be the sole cause. Other explanations—including class/source confounding, preprocessing behavior, checkpoint lineage, or an unrepresentative test input—remain unresolved because local training provenance and histories are unavailable.
+One possible explanation is that the CNN responds to entropy or spectral dispersion that correlates with labels in its training data. The selected scores are compatible with that hypothesis but do not identify a causal feature. Packing, file format, data source, label confounding, preprocessing behavior, and checkpoint lineage are also unresolved. Shortcut learning has not been demonstrated for ThreatVision, and dataset noise has not been established as the sole cause.
 
-## Dataset representativeness and contamination
+## Missing data and evaluation evidence
 
-The local training source, acquisition dates, label process, sample counts, exact/near-duplicate handling, and split manifest are missing. The project cannot establish whether the local training data represents benign packed software, new malware families, current distributions, or different file types. It also cannot rule out duplicates or train/test contamination. These gaps prevent a reliable assessment of generalization.
+The local training source, acquisition dates, label process, sample counts, duplicate handling, and split manifest are not documented. Training histories, independent holdout results, prediction-level outputs, threshold calibration, and external-dataset evaluation are also unavailable. The repository makes no local accuracy, ROC-AUC, precision, recall, F1, false-positive-rate, or calibrated-threshold claim. Literature results for MaleX cannot fill these gaps.
 
-## Missing training and evaluation evidence
+## Static analysis and decision logic
 
-No epoch histories, validation logs, independent holdout results, prediction-level outputs, threshold calibration, or external-dataset report are available. The published MaleX metrics are literature results and cannot fill these gaps. The selected input probes and CPU timing observations do not constitute a benchmark.
+The application is pre-execution and cannot observe runtime unpacking, memory-only payloads, process hollowing after launch, or other behavior that requires execution. Its fusion scorer depends on PE structure, so non-PE inputs may lack relevant signals. Imports and section indicators are heuristics, not proof of malicious behavior. The static weights and thresholds have not been independently calibrated. Static criteria determine the final binary label; the CNN can adjust the numerical score by at most five points, but this design does not establish that either signal is accurate.
 
-## Static-analysis limitations
+## Model and interface
 
-The application is pre-execution and cannot observe runtime unpacking, memory-only payloads, process hollowing after launch, or behavior that only occurs after execution. Its fusion scorer depends heavily on Windows PE structure; non-PE files may lack structural signals or receive incomplete scoring. Imports and section indicators are heuristics, not proof of malicious behavior. Manually chosen weights and thresholds are not shown to be calibrated on an independent dataset.
-
-## Model and interface discrepancies
-
-The deployed artifact is MobileNetV2-based. SE-ResNet appears in project-facing materials as a literature model, but no such local checkpoint is available. The family profiles are rule-based entropy/sparsity heuristics, not a verified multi-class neural classifier. The UI heatmap is a CSS radial-gradient concept; the backend does not compute gradients or live Grad-CAM. The deployed inference threshold is reported as 0.50; the 0.380 cutoff in project-facing material is a literature recommendation.
+The deployed artifact is MobileNetV2-based. SE-ResNet is a literature architecture, not a deployed ThreatVision checkpoint. Family labels are rule-based profiles rather than validated multi-class predictions. The interface heatmap is a CSS illustration; the backend does not compute Grad-CAM or another gradient attribution. The local inference threshold is reported as 0.50, but no calibration evidence is available.
 
 ## Threats to validity
 
-- **Construct validity:** A malware label and a threat score may encode different concepts. A high score is not proof of malicious intent.
-- **Internal validity:** Missing training and split records prevent attributing model behavior to one feature or intervention.
-- **External validity:** Selected synthetic and structured probes do not represent deployment populations or current malware.
-- **Conclusion validity:** No independent metric estimates uncertainty or supports performance comparisons.
-- **Reproducibility:** The checkpoint and preprocessing description exist in the audited project, but the dataset, training history, and complete evaluation artifacts do not.
+- **Construct validity:** A threat score and a malware label represent different concepts; a high score does not establish malicious intent.
+- **Internal validity:** Missing training and split records prevent attributing the observed scores to one feature or cause.
+- **External validity:** The selected probes do not represent Windows PE deployment populations or current malware.
+- **Conclusion validity:** No independent metrics or uncertainty estimates support performance comparisons.
+- **Reproducibility:** The public materials describe the preprocessing and model topology, but omit weights, training data, training history, and complete evaluation artifacts.
 
-The current engineering phase is complete for practical reasons, not because these scientific limitations have been resolved. See [Post-submission investigation](post-submission-investigation.md) and [Future research](future-research.md).
+The engineering phase is complete for practical reasons. The scientific questions remain open; proposed follow-up work is described in [Future research](future-research.md).

@@ -1,25 +1,27 @@
 # Post-Submission Investigation
 
-## Scope and authorship
+## From the capstone to a research question
 
-ThreatVision began as a collaborative undergraduate final-year project. After the project submission, I continued investigating the implementation and the model behavior. This account follows that relative chronology; no submission date or date for the subsequent probes is supplied here. The available audit identifies the authors of the original capstone but does not establish individual authorship or exact timing for each post-submission code change. I therefore distinguish my investigation from implementation details that can only be attributed to the project collectively.
+ThreatVision began as a collaborative undergraduate Final Year Project by Ahsan Ali Salamat and Usman Manzoor. After submission, I continued examining the system, with particular interest in how its neural model responded to inputs that did not resemble ordinary Windows PE files. I am describing my investigation separately from the collaborative engineering work because the available project record does not assign individual authorship or dates to every later code change.
 
-## What prompted further investigation
+## What prompted the investigation
 
-The deployed image model returned high malware scores for selected random-byte and compressed-PDF inputs, while selected structured or constant-byte inputs received low scores. The audit records these probes but does not provide a complete test protocol, repeated trials, a representative sample, or a controlled comparison. I treated the pattern as a reason to investigate possible shortcut learning: the model may respond to entropy or spectral dispersion that happens to correlate with its training labels. The probes do not prove that explanation, and they do not show that dataset noise alone caused the behavior.
+In selected diagnostic probes, random-byte input and a compressed PDF received high neural scores; a structured text PDF and a constant-byte input received low scores. This pattern made me question which properties of the transformed bytes influenced the CNN. The model was developed for Windows PE triage, but its actual training distribution is undocumented. The PDF and random-byte streams therefore should be treated as out-of-distribution probes, not as representative malware or benign PE examples.
 
-## Engineering response recorded in the handoff
+The scores varied across these selected input types. That observation is limited to the probes recorded: there are no repeated trials, complete sample set, controlled feature comparisons, or uncertainty estimates. It does not establish an operational false-positive rate. Sensitivity to entropy or spectral dispersion is one possible explanation, alongside file format, packing, source or label confounding, preprocessing behavior, and checkpoint history. Shortcut learning has not been scientifically demonstrated for this model, and dataset noise has not been shown to be the sole cause.
 
-The audited scorer gives static analysis authority over the final malware/benign label and limits the neural model to a numerical adjustment of at most five points. The handoff connects this arbitration design to concern about high-entropy false alarms. This is a verified property of the deployed scoring logic, not a validated remedy: the static rules themselves have no independent calibration or evaluation report in the supplied evidence. The post-submission record does not identify who authored this specific change or when it was made, so this account does not claim individual implementation credit.
+## What the deployed system does with the CNN score
 
-## Dataset and evaluation questions
+The application uses PE static-analysis criteria to determine the final malware/benign label. The CNN can adjust the numeric threat score by at most five points, but it has no authority over the binary label. This bounds the model's role in the implemented application; it does not validate the static rules or establish that the score adjustment improves decisions. No independent calibration or evaluation report for the static scorer is available.
 
-I considered whether a more carefully controlled dataset, constructed with reliable provenance and labels, could make future evaluation more informative. That is a proposed direction, not a dataset already built or a result already demonstrated. Such work would require source and acquisition metadata, duplicate and near-duplicate controls, label adjudication, representation of benign packed and compressed files, and split designs that reduce family, temporal, and source leakage. It would also require pre-registered baselines and evaluation criteria, secure handling of malware, and sufficient computational resources for data preparation and model comparison.
+## What I considered testing
 
-A new dataset would not automatically solve shortcut learning. The representation, model, label process, and split protocol would still need to be examined through controlled experiments and external evaluation. Alternative explanations for the observed model scores remain possible because the training corpus and histories are not available.
+I considered whether a dataset with documented sources, defensible labels, duplicate controls, and explicit representation of benign packed or compressed files could support a more informative evaluation. I also considered family-aware and time-aware splits, comparisons with simpler static baselines, and tests that vary entropy, packing, and format while holding other properties as constant as possible. These are research directions only. I have not built or validated the proposed dataset, and no experiments are reported here as completed.
 
-## Why this phase is concluding
+A new dataset would not automatically resolve model weaknesses. The representation, label process, model selection, split design, and evaluation protocol could each introduce their own bias. The missing local training data and histories also prevent me from determining whether the current checkpoint learned class-related structure or correlated dataset properties.
 
-I am concluding and documenting the current development phase because the resources required for a meaningful follow-up study are not currently available. These include suitable data access, careful labeling and curation, compute, and time for repeated controlled evaluation. Resource constraints are one reason to stop the current phase; they do not establish the cause of the model behavior, and this decision does not close the research problem.
+## Why I am concluding this phase
 
-The project is therefore best presented as completed undergraduate engineering followed by an independent investigation that surfaced methodological questions. No peer-reviewed publication, comprehensive dataset study, or validated performance result is claimed. The next step would be a separately scoped research study with a documented protocol and appropriate supervision and resources.
+The controlled follow-up would require access to suitable data, careful curation and label review, secure malware handling, computational capacity, and time for repeated comparisons and independent testing. Those resources are not presently available to me, so I am concluding the current development phase. This practical limit does not resolve the scientific question.
+
+The present account is therefore a record of completed collaborative engineering followed by an individual investigation that identified a testable concern. It does not claim peer review, external validation, or reproducibility from the public materials. I would next test whether the CNN adds information beyond entropy, packing, format, and data source under a pre-specified, leakage-resistant evaluation.

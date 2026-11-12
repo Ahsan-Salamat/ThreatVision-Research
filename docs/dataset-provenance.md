@@ -1,21 +1,21 @@
 # Dataset Provenance
 
-## Local training and evaluation data
+## Training and evaluation data for ThreatVision
 
-The available handoff does not establish the provenance, acquisition dates, licensing, exact sample counts, label sources, deduplication procedure, or train/validation/test membership of the data used to train `threatvision_v01.keras`. Local training histories and a retained independent evaluation report are also unavailable. Consequently, this portfolio does not attribute local training to the MaleX dataset and does not report local accuracy, precision, recall, F1, or ROC-AUC.
+The public project record does not establish the source, acquisition dates, licensing, sample counts, label provenance, duplicate handling, or train/validation/test membership of the data used for `threatvision_v01.keras`. Training histories and an independent evaluation report are also unavailable. It is therefore not possible to say whether the local checkpoint used MaleX, or to report local accuracy, precision, recall, F1, or ROC-AUC.
 
-Before a reproducible evaluation, authors should document the exact dataset version, collection window, permitted use, SHA-256-based duplicate policy, label source and confidence, file-format inclusion rules, family grouping, and split manifest. Malware binaries must not be included in the public documentation repository.
+A future evaluation should record the dataset version, collection window, permitted use, exact and near-duplicate policy, label source and confidence, file-format rules, family grouping, and split manifest. Malware binaries should remain in an appropriately controlled environment rather than in this public documentation repository.
 
-## MaleX in the literature
+## MaleX in the cited study
 
-The MaleX corpus is a separate literature benchmark described by Mohammed et al. (2021), with 1,044,394 PE executables and a reported class composition of 864,882 malicious and 179,512 benign files. The handoff lists a 70/15/15 train/validation/test partition. These are literature details and must remain clearly attributed to that publication. They are not evidence about ThreatVision's local model training data.
+Mohammed et al. (2021) describe MaleX as 1,044,394 PE executables, including 864,669 labeled malicious and 179,725 benign files. For balanced CNN experiments, the paper describes 70/20/10 training, validation, and test splits. It also uses a much larger left-out subset containing only malicious files to examine generalization. These are details of the published study, not evidence about ThreatVision's local training data.
 
-The paper reports ROC-AUC 0.970, recall 94.0%, precision 84.7%, and F1 0.891 in its benchmark context. These numbers must not be presented as ThreatVision results. The project-facing confusion matrix identified in the audit sums to the full corpus rather than the stated 15% holdout split, so it is not reproduced here as an independent test result.
+The paper reports mean binary accuracy of 96% across its balanced MaleX experiments. Other reported results use different evaluation contexts, including an all-malicious test subset and an ROC curve that includes training and validation scores. These figures must not be presented as a single held-out benchmark result or as ThreatVision results; see [Experimental record](experimental-record.md) for details.
 
-## Available local test observations
+## Diagnostic inputs
 
-The audit records synthetic inputs including repetitive bytes, random bytes, and a structured header plus random noise. These are focused probes, not a curated labeled dataset. Selected random inputs produced a high CNN score, while a structured text PDF produced a low score and a compressed PDF produced a high score. No population-level inference can be made from these examples.
+The available project record describes probes with repetitive or constant bytes, random bytes, and structured or compressed PDFs. Such inputs help reveal how a model responds to selected byte patterns, but PDFs and random streams are outside the model's intended Windows PE triage domain. They are not a representative labeled test set. The observed score differences do not establish a population false-positive rate or prove sensitivity to entropy.
 
 ## Dataset governance for future work
 
-A publishable study should keep sample binaries in an appropriately controlled environment and publish only safe metadata: source identifiers where licensing permits, hashes for benign samples when safe, split manifests, transformation scripts, and aggregate statistics. Malware hashes can be sensitive and should be reviewed before publication. Dataset licenses and redistribution rights require author verification.
+A future study should keep sample binaries in a controlled environment and share only metadata that is safe and permitted: source identifiers where licensing allows, hashes where appropriate, split manifests, transformation details, and aggregate statistics. Dataset licenses and redistribution rights require verification before data are collected or published.

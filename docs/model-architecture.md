@@ -2,7 +2,7 @@
 
 ## Deployed artifact
 
-The verified inference artifact is `threatvision_v01.keras`. The handoff records a MobileNetV2 backbone (`mobilenetv2_1.00_224`) with a 224 × 224 × 1 float input normalized to `[0,1]` and a single sigmoid output interpreted as `P(malware)`. The artifact has 2,424,196 total parameters; approximately 1.51 million were reported trainable during phase-two fine-tuning.
+The deployed inference artifact is `threatvision_v01.keras`. Its recorded topology uses a MobileNetV2 backbone (`mobilenetv2_1.00_224`), a 224 × 224 × 1 float input normalized to `[0,1]`, and one sigmoid output interpreted by the application as a malware score. The artifact has 2,424,196 total parameters; approximately 1.51 million were reported trainable during phase-two fine-tuning.
 
 ## Layer sequence
 
@@ -14,16 +14,16 @@ The verified inference artifact is `threatvision_v01.keras`. The handoff records
 6. Global average pooling to 1,280 features.
 7. Dropout (0.4), dense 128-unit ReLU layer, dropout (0.2), and dense sigmoid output.
 
-The local checkpoint is not included in this documentation portfolio. The topology above is descriptive and does not enable exact reproduction of model weights or training.
+The checkpoint is not included in this repository. This topology does not provide its weights or training data and is not sufficient to reproduce the model's training or evaluation.
 
-## Inference and decision authority
+## Intended use and decision authority
 
-The available observations record roughly 350–500 ms of CPU inference for selected inputs. This is not a controlled latency benchmark. The model score influences the numerical threat score by no more than ±5 points. Static rules retain full authority over the final binary label.
+The model was developed as an advisory signal for Windows PE triage. The local training distribution is undocumented, so its actual input coverage cannot be established. The application transform also accepts arbitrary bytes, but this does not make arbitrary file types part of the validated model domain. Static criteria control the final malware/benign label; the CNN may adjust the numeric threat score by no more than five points.
 
-## Distinguishing prior work from deployed implementation
+Selected CPU inference observations of approximately 350–500 ms are not a controlled latency benchmark.
 
-An SE-ResNet architecture and associated MaleX results appear in project-facing materials as a literature baseline. The handoff confirms that there is no SE-ResNet checkpoint or implementation in the audited project. The deployed artifact is MobileNetV2. Reported MaleX results, including ROC-AUC 0.970, recall 94.0%, precision 84.7%, and F1 0.891, belong to Mohammed et al. (2021), not to this deployed model.
+## Prior architecture and explainability
 
-## Explainability status
+SE-ResNet appears in the cited study and project documentation as a literature model; no SE-ResNet checkpoint or implementation is part of the deployed ThreatVision artifact. The deployed model is MobileNetV2-based. Literature results are not measurements of this checkpoint.
 
-The interface contains a radial-gradient overlay presented as a Grad-CAM-style visualization. It is a CSS simulation. The backend does not compute gradients or produce a live saliency map. True gradient-based explanation of the DCT representation remains proposed work.
+The interface includes a radial-gradient overlay styled as a Grad-CAM visualization, but it is a CSS illustration. The backend does not compute gradients or produce a saliency map. Validated explanation methods remain future work.
