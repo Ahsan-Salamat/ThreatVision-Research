@@ -10,7 +10,7 @@ The 10 rows labeled benign PE had a mean neural score of 0.2166 (sample SD 0.170
 
 Appending random-byte overlays produced different score trajectories for the two source PEs. The `cli-64` score rose from 0.459961 to 0.999023 across four overlays. For `windows-kill`, it rose from 0.201538 to 0.253418 and then fell to 0.147583. Three of the eight overlay rows received a final malware label. Each transformation changes several byte-level properties, so the observations do not show that entropy alone caused the score changes. The static rules did not neutralize every high-score overlay.
 
-The eight synthetic random-stream rows scored between 0.996582 and 0.999512, across sizes from 5 KiB to 1 MiB. The null-padding and repeated-content rows changed file size and/or entropy while producing little or no score change. These are useful diagnostic observations, but the data do not establish a size-only effect: the noise inputs are not documented as nested or paired streams, and the rows are not independent. The pooled size correlation is descriptive and does not disprove file-size confounding.
+The eight synthetic random-stream rows scored between 0.996582 and 0.999512, across sizes from 5 KiB to 1,000 KiB (1,024,000 bytes). The null-padding and repeated-content rows changed file size and/or entropy while producing little or no score change. These are useful diagnostic observations, but the data do not establish a size-only effect: the noise inputs are not documented as nested or paired streams, and the rows are not independent. The pooled size correlation is descriptive and does not disprove file-size confounding.
 
 ## What the system decides
 

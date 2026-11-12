@@ -24,7 +24,7 @@ The supplied `DIAGNOSTIC_RESULTS.csv` contains 46 rows with 46 distinct SHA-256 
 | --- | ---: | ---: | ---: | ---: |
 | Rows labeled benign Windows PE | 10 | 0.2166 ± 0.1707 | 1/10 | 0/10 |
 | T1: byte shuffle | 2 | 0.0484 ± 0.0102 | 0/2 | 0/2 |
-| T2: null padding | 6 | 0.3308 ± 0.1415 | 0/6 | 0/6 |
+| T2: null padding | 6 | 0.3307 ± 0.1415 | 0/6 | 0/6 |
 | T3: random-byte overlay | 8 | 0.5470 ± 0.3768 | 4/8 | 3/8 |
 | T4: repeated content | 4 | 0.3332 ± 0.1521 | 0/4 | 0/4 |
 | Out-of-distribution probes | 6 | 0.7157 ± 0.4001 | 4/6 | 1/6 |
@@ -38,21 +38,21 @@ The descriptive standard deviations above summarize the rows in each stratum; th
 | Input and transformation | Size (bytes) | Entropy (bits/byte) | Neural score | Static score | Final score / label |
 | --- | ---: | ---: | ---: | ---: | --- |
 | `windows-kill.exe`, original | 80,384 | 3.7151 | 0.201538 | 17 | 13 / benign |
-| `windows-kill`, +10 KB overlay | 90,624 | 4.4090 | 0.227783 | 20 | 16 / benign |
-| `windows-kill`, +50 KB overlay | 131,584 | 5.8591 | 0.253418 | 27 | 23 / benign |
-| `windows-kill`, +100 KB overlay | 182,784 | 6.6310 | 0.191650 | 31 | 27 / benign |
-| `windows-kill`, +200 KB overlay | 285,184 | 7.2535 | 0.147583 | 34 | 31 / malware |
+| `windows-kill`, +10 KiB overlay | 90,624 | 4.4090 | 0.227783 | 20 | 16 / benign |
+| `windows-kill`, +50 KiB overlay | 131,584 | 5.8591 | 0.253418 | 27 | 23 / benign |
+| `windows-kill`, +100 KiB overlay | 182,784 | 6.6310 | 0.191650 | 31 | 27 / benign |
+| `windows-kill`, +200 KiB overlay | 285,184 | 7.2535 | 0.147583 | 34 | 31 / malware |
 | `cli-64.exe`, original | 14,336 | 5.2505 | 0.459961 | 18 | 15 / benign |
-| `cli-64`, +10 KB overlay | 24,576 | 6.7596 | 0.720215 | 25 | 29 / benign |
-| `cli-64`, +50 KB overlay | 65,536 | 7.6918 | 0.846680 | 29 | 33 / benign |
-| `cli-64`, +100 KB overlay | 116,736 | 7.8658 | 0.989258 | 30 | 35 / malware |
-| `cli-64`, +200 KB overlay | 219,136 | 7.9485 | 0.999023 | 31 | 36 / malware |
+| `cli-64`, +10 KiB overlay | 24,576 | 6.7596 | 0.720215 | 25 | 29 / benign |
+| `cli-64`, +50 KiB overlay | 65,536 | 7.6918 | 0.846680 | 29 | 33 / benign |
+| `cli-64`, +100 KiB overlay | 116,736 | 7.8658 | 0.989258 | 30 | 35 / malware |
+| `cli-64`, +200 KiB overlay | 219,136 | 7.9485 | 0.999023 | 31 | 36 / malware |
 
 The overlay response differed between the two source files. The `cli-64` neural score rose across these four transformations, while the `windows-kill` score rose modestly and then fell. Three of the eight overlay rows received a final malware label. Each overlay also changes file size and the byte and frequency representation, so this is evidence about these interventions, not an entropy-only causal effect or a general packing result.
 
 For the two histogram-preserving shuffles, file size and Shannon entropy match their source rows in the CSV. The `windows-kill` score changed from 0.201538 to 0.041138; the `cli-64` score changed from 0.459961 to 0.055603. This supports sensitivity to byte ordering under these two interventions. It does not establish that the representation captures malware semantics.
 
-The six null-padding rows retain the same neural score as their corresponding original input in the CSV despite changes in size and entropy. Repeated-content rows also show little score movement: `windows-kill` remains at 0.201538, while `cli-64` changes from 0.459961 to 0.460693 and 0.468994 at 2× and 4× size. Eight synthetic random-stream rows from 5 KiB to 1 MiB have scores between 0.996582 and 0.999512; these are different generated inputs, not a documented size-only intervention.
+The six null-padding rows retain the same neural score as their corresponding original input in the CSV despite changes in size and entropy. Repeated-content rows also show little score movement: `windows-kill` remains at 0.201538, while `cli-64` changes from 0.459961 to 0.460693 and 0.468994 at 2× and 4× size. Eight synthetic random-stream rows from 5 KiB to 1,000 KiB (1,024,000 bytes) have scores between 0.996582 and 0.999512; these are different generated inputs, not a documented size-only intervention.
 
 Across all 46 rows, the descriptive Spearman correlation between size and neural score is approximately −0.0691. This pooled correlation mixes unrelated probes and dependent transformations, so its reported independent-row p-value is not used. It neither disproves size confounding nor replaces a controlled size experiment.
 

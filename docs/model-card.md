@@ -7,7 +7,7 @@ The university record lists the Final Year Project as a group submission by Ahsa
 ## Model details
 
 - **Artifact:** `threatvision_v01.keras` (not included in this repository)
-- **Architecture:** grayscale input adapter, ImageNet MobileNetV2 backbone, global average pooling, dropout, and dense binary head
+- **Architecture:** grayscale input adapter, MobileNetV2 backbone (ImageNet initialization reported but not independently verified), global average pooling, dropout, and dense binary head
 - **Input tensor:** 224 × 224 × 1 spectrogram, normalized to `[0,1]`
 - **Output:** scalar sigmoid score interpreted by the application as a malware score
 - **Technical developer:** Ahsan Ali Salamat, The University of Faisalabad

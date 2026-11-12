@@ -42,10 +42,10 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A[224 x 224 x 1 input] --> B[Training-time flip and rotation layers]
+    A[224 x 224 x 1 input] --> B[Flip and rotation layers]
     B --> C[Learned 1 x 1 grayscale-to-RGB adapter]
-    C --> D[Rescale 0..1 to -1..1]
-    D --> E[ImageNet MobileNetV2 backbone]
+    C --> D[Affine rescaling: 2x minus 1]
+    D --> E[MobileNetV2 backbone]
     E --> F[Global average pooling: 1280]
     F --> G[Dropout 0.4]
     G --> H[Dense 128, ReLU]

@@ -2,6 +2,16 @@
 
 This plan is proposed work. It begins with provenance because the pilot cannot currently be reproduced and the deployed checkpoint's training data and history are unknown. The main question is whether the existing byte-bigram/DCT representation adds useful classification information beyond simpler file statistics and PE static features.
 
+## First baseline experiment
+
+Begin with a frozen-score comparison requiring no CNN retraining. The hypothesis is that adding the existing neural score improves classification beyond simple statistics and static PE features.
+
+Use lawfully obtained raw PE files with independently documented benign/malicious labels, label dates, sources, and packing status. Keep original files and all derivatives in the same partition. Remove exact duplicates and group related versions/families before creating chronological training, validation, and test partitions. Do not use this 46-row benign/synthetic pilot as a training or performance test set. Unknown overlap with the checkpoint's historical training corpus must remain an explicit limitation; a clean checkpoint-generalization claim requires that overlap to be resolved.
+
+Fit two regularized logistic regressions: A uses log file size, byte entropy, null fraction, and the same pre-specified PE features; B uses those features plus the frozen neural score. Standardize using training data only and choose regularization on validation data. Fix the test split and evaluation rule before examining test predictions. Resolve augmentation behavior and measure repeated-inference variability before caching neural scores.
+
+Compare test PR-AUC using the same examples and report the paired difference with uncertainty resampled at the independent source/family group level, alongside per-source and packed-benign errors. Record prevalence because PR-AUC depends on it. Pre-register a practically meaningful improvement margin. An interval wholly below that margin counts against the claimed improvement; one spanning it is inconclusive, not proof of equivalence. No low-FPR certification or runtime budget is assumed. This experiment evaluates the incremental value of this checkpoint's score; it cannot establish that DCT itself is superior to raw bigrams.
+
 ## 1. Recover and validate provenance
 
 - **Hypothesis:** The deployed checkpoint and preprocessing can be identified and reproduced from recoverable artifacts.
@@ -24,7 +34,7 @@ This plan is proposed work. It begins with provenance because the pilot cannot c
 - **Baseline and data:** Paired original files and transformations with sham controls: content repetition, null padding, histogram-preserving shuffle, and overlays. Begin with known benign PE files; do not treat transformed files as malware examples.
 - **Confounders:** Each intervention can alter several byte and representation properties; transformations may invalidate a file or change its parser behavior.
 - **Measure:** Paired neural-score changes, static-feature changes, and final-label changes by intervention and source file. Report the exact transformation and byte-level checks.
-- **Falsification:** A proposed single-factor explanation is rejected if the transformation changes its intended factor or materially changes uncontrolled properties. Any entropy-specific claim requires a design that separates entropy from size, ordering, and format.
+- **Falsification:** A proposed single-factor interpretation is unsupported if the transformation fails to change its intended factor or materially changes uncontrolled properties. Any entropy-specific claim requires a design that separates entropy from size, ordering, and format.
 
 ## 4. Compare raw bigrams and DCT representations
 
@@ -52,6 +62,6 @@ This plan is proposed work. It begins with provenance because the pilot cannot c
 
 ## Sample size and uncertainty
 
-A 4,000-file balanced benchmark would provide about 2,000 benign test cases if half were reserved for testing. Even with zero false positives among 2,000 independent benign examples, the approximate one-sided 95% upper bound is 0.0015 (the rule-of-three approximation). That sample therefore cannot establish an FPR at or below 0.001 with 95% confidence. Roughly 3,000 independent benign test cases with zero false positives are needed just to put that upper bound near 0.001; clustering by source or family and any observed errors increase the required sample. The final sample size should be calculated from a pre-specified interval width and target operating point, not fixed in advance at 4,000.
+An entirely held-out, balanced 4,000-file test set would contain 2,000 benign cases. If only half of a balanced 4,000-file collection were reserved for testing, that test partition would contain about 1,000 benign cases. Even with zero false positives among 2,000 independent benign examples, the approximate one-sided 95% upper bound is 0.0015 (the rule-of-three approximation). That sample therefore cannot establish an FPR at or below 0.001 with 95% confidence. Roughly 3,000 independent benign test cases with zero false positives are needed just to put that upper bound near 0.001; clustering by source or family and any observed errors increase the required sample. The final sample size should be calculated from a pre-specified interval width and target operating point, not fixed in advance at 4,000.
 
 Public benchmark names do not guarantee access to raw executable files suitable for the DCT pipeline. EMBER2024 documents a release of extracted features and labels; those features alone cannot be passed through ThreatVision's byte-to-DCT pipeline. BODMAS describes PE files, vectors, and metadata, but its file availability and use terms still need to be checked for the intended study [7, 11]. Confirm raw-binary access, label source, data-use terms, and safe handling before selecting either dataset. No duration is promised for the full research program; provenance recovery, data governance, model comparisons, and independent review may exceed a short laptop study.

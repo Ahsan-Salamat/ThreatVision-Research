@@ -1,6 +1,6 @@
 # ThreatVision: Malware Triage with Static Analysis and Frequency-Domain Features
 
-I independently designed and developed ThreatVision's technical architecture, software, integrations, and post-submission diagnostics as my Software Engineering Final Year Project at The University of Faisalabad. University records list the formal FYP as a group submission by Ahsan Ali Salamat and Usman Manzoor; the record of group submission is separate from technical authorship.
+I independently designed and developed ThreatVision's technical architecture, software, and integrations for my Software Engineering Final Year Project at The University of Faisalabad. I continued investigating the system after submission. University records list the formal FYP as a group submission by Ahsan Ali Salamat and Usman Manzoor; the record of group submission is separate from technical authorship.
 
 ThreatVision combines PE static analysis with a byte-bigram/DCT image path and a MobileNetV2 neural score. Static criteria determine the final malware/benign label; neural inference can adjust the numeric threat score by at most five points. The byte-bigram/DCT representation follows prior work by Mohammed et al. (2021), rather than a new algorithm. Family labels are rule-based profiles, and the interface heatmap is a CSS illustration rather than a gradient-derived explanation.
 
@@ -13,6 +13,10 @@ There were no known-malicious PE examples or independently verified test labels 
 ## What remains unknown
 
 The checkpoint archive identifies a MobileNetV2 model saved with Keras 3.14.1 and records Adam at `5 × 10⁻⁶`, binary cross-entropy, and accuracy/AUC/precision/recall metrics. These saved settings do not recover the training history or dataset. The reported relationship between the deployed checkpoint and a historical `phase2_best.keras` file is not independently established. No local accuracy, ROC-AUC, precision, recall, F1, calibrated operating point, or false-positive rate is claimed. The experiment code, source binaries, and sample-level CSV are not included; measurement redistribution terms still need confirmation.
+
+## Research question
+
+Does the byte-bigram/DCT neural representation provide incremental malware-classification information beyond simple file statistics and static PE features? The [next baseline experiment](docs/future-research.md#first-baseline-experiment) compares the same statistical and PE features with and without the frozen neural score.
 
 ## Engineering, investigation, and proposed research
 
