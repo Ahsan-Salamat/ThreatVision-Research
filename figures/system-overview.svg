@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1540" height="610" viewBox="0 0 1540 610" role="img" aria-labelledby="title desc">
+<title id="title">ThreatVision system overview</title><desc id="desc">A file passes upload validation, then follows separate static PE analysis and byte-bigram/DCT neural paths. Static criteria determine the final label; the neural score can adjust only the numeric risk score by at most five points. The report is returned to an analyst. This is a conceptual branch diagram, not a claim that the stages run concurrently.</desc>
+<defs>
+ <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#53687B"/></marker>
+ <marker id="arrow-cyan" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#168A98"/></marker>
+</defs><style>
+text { font-family: Arial, Helvetica, sans-serif; fill: #203344; }
+.kicker { font-size: 15px; font-weight: 700; letter-spacing: 1.8px; fill: #168A98; }
+.figtitle { font-size: 25px; font-weight: 700; fill: #17324D; }
+.subtitle { font-size: 15px; fill: #53687B; }
+.card { fill: #FFFFFF; stroke: #D2DCE5; stroke-width: 1.5; }
+.card-title { font-size: 18px; font-weight: 700; fill: #17324D; }
+.body { font-size: 15px; fill: #203344; }
+.small { font-size: 13px; fill: #53687B; }
+.micro { font-size: 11px; fill: #53687B; }
+.num { font-size: 13px; font-weight: 700; fill: white; }
+.node { fill: #EEF3F8; stroke: #D2DCE5; stroke-width: 1.5; }
+.node-cyan { fill: #EAF5F6; stroke: #A9D5D9; stroke-width: 1.5; }
+.node-amber { fill: #FBF3E8; stroke: #E5CCAA; stroke-width: 1.5; }
+.edge { fill: none; stroke: #53687B; stroke-width: 2.3; marker-end: url(#arrow); }
+.edge-cyan { fill: none; stroke: #168A98; stroke-width: 2.5; marker-end: url(#arrow-cyan); }
+.edge-dash { fill: none; stroke: #168A98; stroke-width: 2.5; stroke-dasharray: 8 6; marker-end: url(#arrow-cyan); }
+@media (prefers-color-scheme: dark) {
+ text { fill: #E5EEF5; }
+ .kicker { fill: #62C2CB; }
+ .figtitle, .card-title { fill: #F1F6FA; }
+ .subtitle, .body, .small, .micro { fill: #C0CED9; }
+ .card, .node { fill: #172A3D; stroke: #52697C; }
+ .node-cyan { fill: #12313A; stroke: #388B94; }
+ .node-amber { fill: #34291B; stroke: #9B7548; }
+ .edge { stroke: #9BAFC0; }
+ .edge-cyan, .edge-dash { stroke: #58C7D2; }
+ .plot-series-navy, .plot-mark-navy { stroke: #A8C8EE !important; }
+ .plot-series-cyan, .plot-mark-cyan { stroke: #62D1DC !important; }
+}
+</style>
+<text x="48" y="42" class="kicker">THREATVISION  /  SYSTEM OVERVIEW</text>
+<text x="48" y="78" class="figtitle">Two analysis paths; one static-led decision</text>
+<text x="48" y="105" class="subtitle">Branches distinguish evidence paths and do not imply concurrent execution.</text>
+<rect x="40" y="238" width="160" height="104" rx="14" class="node"/>
+<text x="120" y="278" class="card-title" text-anchor="middle">Input binary</text>
+<text x="120" y="305" class="small" text-anchor="middle">submitted file</text>
+<rect x="235" y="238" width="190" height="104" rx="14" class="node"/>
+<text x="330" y="277" class="card-title" text-anchor="middle">File validation</text>
+<text x="330" y="303" class="small" text-anchor="middle">signature and upload checks</text>
+<circle cx="458" cy="290" r="7" fill="#53687B"/>
+<path d="M200 290 H235" class="edge"/>
+<path d="M425 290 H458 V181 H485" class="edge"/>
+<path d="M458 290 V426 H485" class="edge"/>
+<rect x="485" y="132" width="245" height="98" rx="14" class="node"/>
+<text x="607" y="170" class="card-title" text-anchor="middle">Static PE analysis</text>
+<text x="607" y="196" class="small" text-anchor="middle">headers, imports, entropy, strings</text>
+<rect x="485" y="377" width="245" height="98" rx="14" class="node-cyan"/>
+<text x="607" y="414" class="card-title" text-anchor="middle">Byte-bigram / DCT</text>
+<text x="607" y="441" class="small" text-anchor="middle">256 × 256 matrix → 224 × 224</text>
+<path d="M730 181 H772" class="edge"/>
+<path d="M730 426 H772" class="edge-cyan"/>
+<rect x="772" y="132" width="225" height="98" rx="14" class="node"/>
+<text x="884" y="170" class="card-title" text-anchor="middle">Static criteria</text>
+<text x="884" y="196" class="small" text-anchor="middle">static score and label rules</text>
+<rect x="772" y="377" width="225" height="98" rx="14" class="node-cyan"/>
+<text x="884" y="414" class="card-title" text-anchor="middle">MobileNetV2</text>
+<text x="884" y="441" class="small" text-anchor="middle">neural sigmoid score</text>
+<path d="M997 181 H1040 V246 H1073" class="edge"/>
+<path d="M997 426 H1040 V350 H1073" class="edge-cyan"/>
+<rect x="1073" y="218" width="250" height="160" rx="14" class="node-amber"/>
+<text x="1198" y="253" class="card-title" text-anchor="middle">Static-led fusion</text>
+<text x="1198" y="285" class="body" text-anchor="middle">Final label: static criteria</text>
+<text x="1198" y="313" class="small" text-anchor="middle">Neural score: bounded advisory</text>
+<text x="1198" y="338" class="small" text-anchor="middle">numeric adjustment ≤ ±5 points</text>
+<path d="M1323 298 H1380" class="edge"/>
+<rect x="1380" y="238" width="140" height="120" rx="14" class="node"/>
+<text x="1450" y="282" class="card-title" text-anchor="middle">Analyst report</text>
+<text x="1450" y="313" class="small" text-anchor="middle">scan dossier</text>
+<text x="48" y="548" class="small">The neural branch cannot override the final malware/benign label. The score adjustment is an application rule, not calibrated model performance.</text>
+</svg>

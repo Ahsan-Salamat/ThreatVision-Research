@@ -35,3 +35,5 @@
 *.zip
 *.7z
 *.rar
+!figures/
+!figures/*.svg

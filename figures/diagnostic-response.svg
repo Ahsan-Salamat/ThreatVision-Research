@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="710" viewBox="0 0 1200 710" role="img" aria-labelledby="title desc">
+<title id="title">Diagnostic neural-score response to selected random-byte overlays</title><desc id="desc">Plot of actual CSV neural scores for two source files labeled benign PE and their four random-byte overlay derivatives at 10, 50, 100 and 200 KiB. The source-dependent trajectories are descriptive; scores are uncalibrated sigmoid outputs and the overlays change multiple byte properties.</desc>
+<defs>
+ <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#53687B"/></marker>
+ <marker id="arrow-cyan" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#168A98"/></marker>
+</defs><style>
+text { font-family: Arial, Helvetica, sans-serif; fill: #203344; }
+.kicker { font-size: 15px; font-weight: 700; letter-spacing: 1.8px; fill: #168A98; }
+.figtitle { font-size: 25px; font-weight: 700; fill: #17324D; }
+.subtitle { font-size: 15px; fill: #53687B; }
+.card { fill: #FFFFFF; stroke: #D2DCE5; stroke-width: 1.5; }
+.card-title { font-size: 18px; font-weight: 700; fill: #17324D; }
+.body { font-size: 15px; fill: #203344; }
+.small { font-size: 13px; fill: #53687B; }
+.micro { font-size: 11px; fill: #53687B; }
+.num { font-size: 13px; font-weight: 700; fill: white; }
+.node { fill: #EEF3F8; stroke: #D2DCE5; stroke-width: 1.5; }
+.node-cyan { fill: #EAF5F6; stroke: #A9D5D9; stroke-width: 1.5; }
+.node-amber { fill: #FBF3E8; stroke: #E5CCAA; stroke-width: 1.5; }
+.edge { fill: none; stroke: #53687B; stroke-width: 2.3; marker-end: url(#arrow); }
+.edge-cyan { fill: none; stroke: #168A98; stroke-width: 2.5; marker-end: url(#arrow-cyan); }
+.edge-dash { fill: none; stroke: #168A98; stroke-width: 2.5; stroke-dasharray: 8 6; marker-end: url(#arrow-cyan); }
+@media (prefers-color-scheme: dark) {
+ text { fill: #E5EEF5; }
+ .kicker { fill: #62C2CB; }
+ .figtitle, .card-title { fill: #F1F6FA; }
+ .subtitle, .body, .small, .micro { fill: #C0CED9; }
+ .card, .node { fill: #172A3D; stroke: #52697C; }
+ .node-cyan { fill: #12313A; stroke: #388B94; }
+ .node-amber { fill: #34291B; stroke: #9B7548; }
+ .edge { stroke: #9BAFC0; }
+ .edge-cyan, .edge-dash { stroke: #58C7D2; }
+ .plot-series-navy, .plot-mark-navy { stroke: #A8C8EE !important; }
+ .plot-series-cyan, .plot-mark-cyan { stroke: #62D1DC !important; }
+}
+</style>
+<text x="48" y="42" class="kicker">THREATVISION  /  DIAGNOSTIC PILOT</text>
+<text x="48" y="78" class="figtitle">Neural-score response varies by source file</text>
+<text x="48" y="105" class="subtitle">Two selected files labeled benign PE in the supplied CSV; four random-byte overlays per source.</text>
+<path d="M105 555.0 H925" stroke="#D2DCE5" stroke-width="1"/>
+<text x="89" y="560.0" class="small" text-anchor="end">0.0</text>
+<path d="M105 475.0 H925" stroke="#D2DCE5" stroke-width="1"/>
+<text x="89" y="480.0" class="small" text-anchor="end">0.2</text>
+<path d="M105 395.0 H925" stroke="#D2DCE5" stroke-width="1"/>
+<text x="89" y="400.0" class="small" text-anchor="end">0.4</text>
+<path d="M105 315.0 H925" stroke="#D2DCE5" stroke-width="1"/>
+<text x="89" y="320.0" class="small" text-anchor="end">0.6</text>
+<path d="M105 235.0 H925" stroke="#D2DCE5" stroke-width="1"/>
+<text x="89" y="240.0" class="small" text-anchor="end">0.8</text>
+<path d="M105 155.0 H925" stroke="#D2DCE5" stroke-width="1"/>
+<text x="89" y="160.0" class="small" text-anchor="end">1.0</text>
+<path d="M105.0 155 V555" stroke="#D2DCE5" stroke-width="1" stroke-dasharray="3 6"/>
+<text x="105.0" y="580" class="small" text-anchor="middle">0</text>
+<path d="M146.0 155 V555" stroke="#D2DCE5" stroke-width="1" stroke-dasharray="3 6"/>
+<text x="146.0" y="580" class="small" text-anchor="middle">10</text>
+<path d="M310.0 155 V555" stroke="#D2DCE5" stroke-width="1" stroke-dasharray="3 6"/>
+<text x="310.0" y="580" class="small" text-anchor="middle">50</text>
+<path d="M515.0 155 V555" stroke="#D2DCE5" stroke-width="1" stroke-dasharray="3 6"/>
+<text x="515.0" y="580" class="small" text-anchor="middle">100</text>
+<path d="M720.0 155 V555" stroke="#D2DCE5" stroke-width="1" stroke-dasharray="3 6"/>
+<text x="720.0" y="580" class="small" text-anchor="middle">150</text>
+<path d="M925.0 155 V555" stroke="#D2DCE5" stroke-width="1" stroke-dasharray="3 6"/>
+<text x="925.0" y="580" class="small" text-anchor="middle">200</text>
+<text x="515.0" y="612" class="body" text-anchor="middle">Appended random bytes (KiB)</text>
+<text x="30" y="355.0" class="body" text-anchor="middle" transform="rotate(-90 30 355.0)">Neural sigmoid score</text>
+<path class="plot-series-navy" d="M105.0,474.4 L146.0,463.9 L310.0,453.6 L515.0,478.3 L925.0,496.0" fill="none" stroke="#17324D" stroke-width="3.5" />
+<circle class="plot-mark-navy" cx="105.0" cy="474.4" r="6.5" fill="white" stroke="#17324D" stroke-width="3"/>
+<circle class="plot-mark-navy" cx="146.0" cy="463.9" r="6.5" fill="white" stroke="#17324D" stroke-width="3"/>
+<circle class="plot-mark-navy" cx="310.0" cy="453.6" r="6.5" fill="white" stroke="#17324D" stroke-width="3"/>
+<circle class="plot-mark-navy" cx="515.0" cy="478.3" r="6.5" fill="white" stroke="#17324D" stroke-width="3"/>
+<circle class="plot-mark-navy" cx="925.0" cy="496.0" r="6.5" fill="white" stroke="#17324D" stroke-width="3"/>
+<path class="plot-series-cyan" d="M105.0,371.0 L146.0,266.9 L310.0,216.3 L515.0,159.3 L925.0,155.4" fill="none" stroke="#168A98" stroke-width="3.5" stroke-dasharray="10 7"/>
+<path class="plot-mark-cyan" d="M105.0 364.0 L112.0 371.0 L105.0 378.0 L98.0 371.0 Z" fill="white" stroke="#168A98" stroke-width="3"/>
+<path class="plot-mark-cyan" d="M146.0 259.9 L153.0 266.9 L146.0 273.9 L139.0 266.9 Z" fill="white" stroke="#168A98" stroke-width="3"/>
+<path class="plot-mark-cyan" d="M310.0 209.3 L317.0 216.3 L310.0 223.3 L303.0 216.3 Z" fill="white" stroke="#168A98" stroke-width="3"/>
+<path class="plot-mark-cyan" d="M515.0 152.3 L522.0 159.3 L515.0 166.3 L508.0 159.3 Z" fill="white" stroke="#168A98" stroke-width="3"/>
+<path class="plot-mark-cyan" d="M925.0 148.4 L932.0 155.4 L925.0 162.4 L918.0 155.4 Z" fill="white" stroke="#168A98" stroke-width="3"/>
+<path d="M970 202 H1025" stroke="#17324D" stroke-width="3.5"/>
+<circle cx="997" cy="202" r="6" fill="white" stroke="#17324D" stroke-width="3"/>
+<text x="1040" y="208" class="body">windows-kill</text>
+<path d="M970 247 H1025" stroke="#168A98" stroke-width="3.5" stroke-dasharray="10 7"/>
+<path d="M997 240 L1004 247 L997 254 L990 247 Z" fill="white" stroke="#168A98" stroke-width="3"/>
+<text x="1040" y="253" class="body">cli-64</text>
+<rect x="960" y="300" width="205" height="145" rx="12" class="node"/>
+<text x="980" y="333" class="card-title">Recorded overlay range</text>
+<text x="980" y="366" class="small">windows-kill</text>
+<text x="1145" y="366" class="small" text-anchor="end">0.148–0.253</text>
+<text x="980" y="395" class="small">cli-64</text>
+<text x="1145" y="395" class="small" text-anchor="end">0.460–0.999</text>
+<text x="980" y="428" class="micro">baseline through +200 KiB</text>
+<text x="105" y="626" class="small">The score is a sigmoid output, not a calibrated malware probability. Overlaying bytes changes size and byte-frequency structure together; these observations do not isolate entropy or estimate detection performance.</text>
+<text x="105" y="652" class="small">The two source files are treated as paired examples, not independent samples. Source labels and transformations have not been independently validated.</text>
+</svg>

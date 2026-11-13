@@ -1,0 +1,205 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1010" viewBox="0 0 1440 1010" role="img" aria-labelledby="title desc">
+<title id="title">Byte-bigram and DCT preprocessing</title><desc id="desc">A nine-step schematic using the explicitly synthetic byte sequence 4D 5A 90 00 00 00 90 5A 4D. Its adjacent-pair matrix slice shows raw counts, null-pair suppression, normalization, DCT-II, log magnitude and resizing. No real file or model output is shown.</desc>
+<defs>
+ <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#53687B"/></marker>
+ <marker id="arrow-cyan" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#168A98"/></marker>
+</defs><style>
+text { font-family: Arial, Helvetica, sans-serif; fill: #203344; }
+.kicker { font-size: 15px; font-weight: 700; letter-spacing: 1.8px; fill: #168A98; }
+.figtitle { font-size: 25px; font-weight: 700; fill: #17324D; }
+.subtitle { font-size: 15px; fill: #53687B; }
+.card { fill: #FFFFFF; stroke: #D2DCE5; stroke-width: 1.5; }
+.card-title { font-size: 18px; font-weight: 700; fill: #17324D; }
+.body { font-size: 15px; fill: #203344; }
+.small { font-size: 13px; fill: #53687B; }
+.micro { font-size: 11px; fill: #53687B; }
+.num { font-size: 13px; font-weight: 700; fill: white; }
+.node { fill: #EEF3F8; stroke: #D2DCE5; stroke-width: 1.5; }
+.node-cyan { fill: #EAF5F6; stroke: #A9D5D9; stroke-width: 1.5; }
+.node-amber { fill: #FBF3E8; stroke: #E5CCAA; stroke-width: 1.5; }
+.edge { fill: none; stroke: #53687B; stroke-width: 2.3; marker-end: url(#arrow); }
+.edge-cyan { fill: none; stroke: #168A98; stroke-width: 2.5; marker-end: url(#arrow-cyan); }
+.edge-dash { fill: none; stroke: #168A98; stroke-width: 2.5; stroke-dasharray: 8 6; marker-end: url(#arrow-cyan); }
+@media (prefers-color-scheme: dark) {
+ text { fill: #E5EEF5; }
+ .kicker { fill: #62C2CB; }
+ .figtitle, .card-title { fill: #F1F6FA; }
+ .subtitle, .body, .small, .micro { fill: #C0CED9; }
+ .card, .node { fill: #172A3D; stroke: #52697C; }
+ .node-cyan { fill: #12313A; stroke: #388B94; }
+ .node-amber { fill: #34291B; stroke: #9B7548; }
+ .edge { stroke: #9BAFC0; }
+ .edge-cyan, .edge-dash { stroke: #58C7D2; }
+ .plot-series-navy, .plot-mark-navy { stroke: #A8C8EE !important; }
+ .plot-series-cyan, .plot-mark-cyan { stroke: #62D1DC !important; }
+}
+</style>
+<text x="48" y="42" class="kicker">THREATVISION  /  PREPROCESSING</text>
+<text x="48" y="78" class="figtitle">From bytes to a neural input</text>
+<text x="48" y="105" class="subtitle">Synthetic teaching example only — not a measured PE feature map or a model output.</text>
+<rect x="45" y="132" width="410" height="250" rx="16" class="card"/>
+<circle cx="70" cy="159" r="14" fill="#168A98"/>
+<text x="70" y="164" class="num" text-anchor="middle">1</text>
+<text x="96" y="165" class="card-title">Raw byte sequence</text>
+<rect x="515" y="132" width="410" height="250" rx="16" class="card"/>
+<circle cx="540" cy="159" r="14" fill="#168A98"/>
+<text x="540" y="164" class="num" text-anchor="middle">2</text>
+<text x="566" y="165" class="card-title">Overlapping byte pairs</text>
+<rect x="985" y="132" width="410" height="250" rx="16" class="card"/>
+<circle cx="1010" cy="159" r="14" fill="#168A98"/>
+<text x="1010" y="164" class="num" text-anchor="middle">3</text>
+<text x="1036" y="165" class="card-title">256 × 256 count matrix</text>
+<rect x="985" y="430" width="410" height="250" rx="16" class="card"/>
+<circle cx="1010" cy="457" r="14" fill="#168A98"/>
+<text x="1010" y="462" class="num" text-anchor="middle">4</text>
+<text x="1036" y="463" class="card-title">Suppress null pair</text>
+<rect x="515" y="430" width="410" height="250" rx="16" class="card"/>
+<circle cx="540" cy="457" r="14" fill="#168A98"/>
+<text x="540" y="462" class="num" text-anchor="middle">5</text>
+<text x="566" y="463" class="card-title">Normalize and quantize</text>
+<rect x="45" y="430" width="410" height="250" rx="16" class="card"/>
+<circle cx="70" cy="457" r="14" fill="#168A98"/>
+<text x="70" y="462" class="num" text-anchor="middle">6</text>
+<text x="96" y="463" class="card-title">Orthonormal 2D DCT-II</text>
+<rect x="45" y="728" width="410" height="250" rx="16" class="card"/>
+<circle cx="70" cy="755" r="14" fill="#168A98"/>
+<text x="70" y="760" class="num" text-anchor="middle">7</text>
+<text x="96" y="761" class="card-title">Log-magnitude spectrum</text>
+<rect x="515" y="728" width="410" height="250" rx="16" class="card"/>
+<circle cx="540" cy="755" r="14" fill="#168A98"/>
+<text x="540" y="760" class="num" text-anchor="middle">8</text>
+<text x="566" y="761" class="card-title">Resize to model shape</text>
+<rect x="985" y="728" width="410" height="250" rx="16" class="card"/>
+<circle cx="1010" cy="755" r="14" fill="#168A98"/>
+<text x="1010" y="760" class="num" text-anchor="middle">9</text>
+<text x="1036" y="761" class="card-title">Neural model input</text>
+<text x="70" y="215" class="small">Synthetic bytes (hex)</text>
+<rect x="70" y="245" width="34" height="38" rx="5" fill="#EAF5F6" stroke="#A9D5D9"/>
+<text x="87" y="270" class="small" text-anchor="middle">4D</text>
+<rect x="109" y="245" width="34" height="38" rx="5" fill="#EAF5F6" stroke="#A9D5D9"/>
+<text x="126" y="270" class="small" text-anchor="middle">5A</text>
+<rect x="148" y="245" width="34" height="38" rx="5" fill="#EAF5F6" stroke="#A9D5D9"/>
+<text x="165" y="270" class="small" text-anchor="middle">90</text>
+<rect x="187" y="245" width="34" height="38" rx="5" fill="#FBF3E8" stroke="#E5CCAA"/>
+<text x="204" y="270" class="small" text-anchor="middle">00</text>
+<rect x="226" y="245" width="34" height="38" rx="5" fill="#FBF3E8" stroke="#E5CCAA"/>
+<text x="243" y="270" class="small" text-anchor="middle">00</text>
+<rect x="265" y="245" width="34" height="38" rx="5" fill="#FBF3E8" stroke="#E5CCAA"/>
+<text x="282" y="270" class="small" text-anchor="middle">00</text>
+<rect x="304" y="245" width="34" height="38" rx="5" fill="#EAF5F6" stroke="#A9D5D9"/>
+<text x="321" y="270" class="small" text-anchor="middle">90</text>
+<rect x="343" y="245" width="34" height="38" rx="5" fill="#EAF5F6" stroke="#A9D5D9"/>
+<text x="360" y="270" class="small" text-anchor="middle">5A</text>
+<rect x="382" y="245" width="34" height="38" rx="5" fill="#EAF5F6" stroke="#A9D5D9"/>
+<text x="399" y="270" class="small" text-anchor="middle">4D</text>
+<text x="70" y="319" class="small">Each value is one byte; the sequence is invented</text>
+<text x="70" y="342" class="small">for explanation and is not malware data.</text>
+<text x="70" y="398" class="small">n = 9 bytes  ·  adjacent pairs = n − 1 = 8</text>
+<text x="540" y="215" class="small">Count every neighboring pair, including repeats.</text>
+<text x="550" y="244" class="small">4D → 5A</text>
+<text x="662" y="244" class="body">1</text>
+<text x="550" y="278" class="small">5A → 90</text>
+<text x="662" y="278" class="body">1</text>
+<text x="550" y="312" class="small">90 → 00</text>
+<text x="662" y="312" class="body">1</text>
+<text x="550" y="346" class="small">00 → 00</text>
+<text x="662" y="346" class="body">2</text>
+<text x="720" y="244" class="small">00 → 90</text>
+<text x="832" y="244" class="body">1</text>
+<text x="720" y="278" class="small">90 → 5A</text>
+<text x="832" y="278" class="body">1</text>
+<text x="720" y="312" class="small">5A → 4D</text>
+<text x="832" y="312" class="body">1</text>
+<text x="540" y="370" class="small">Eight transitions total</text>
+<text x="1010" y="215" class="small">Rows: first byte  ·  columns: next byte</text>
+<text x="1135.0" y="235" class="micro" text-anchor="middle">00</text>
+<text x="1083" y="258.0" class="micro" text-anchor="end">00</text>
+<text x="1165.0" y="235" class="micro" text-anchor="middle">4D</text>
+<text x="1083" y="288.0" class="micro" text-anchor="end">4D</text>
+<text x="1195.0" y="235" class="micro" text-anchor="middle">5A</text>
+<text x="1083" y="318.0" class="micro" text-anchor="end">5A</text>
+<text x="1225.0" y="235" class="micro" text-anchor="middle">90</text>
+<text x="1083" y="348.0" class="micro" text-anchor="end">90</text>
+<rect x="1120" y="239" width="28" height="28" rx="4" fill="#168A98" stroke="#D2DCE5"/>
+<text x="1134.0" y="267" font-family="Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="white">2</text>
+<rect x="1150" y="239" width="28" height="28" rx="4" fill="#F3F6F8" stroke="#D2DCE5"/>
+<text x="1164.0" y="267" font-family="Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="#718394">0</text>
+<rect x="1180" y="239" width="28" height="28" rx="4" fill="#F3F6F8" stroke="#D2DCE5"/>
+<text x="1194.0" y="267" font-family="Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="#718394">0</text>
+<rect x="1210" y="239" width="28" height="28" rx="4" fill="#168A98" stroke="#D2DCE5"/>
+<text x="1224.0" y="267" font-family="Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="white">1</text>
+<rect x="1120" y="269" width="28" height="28" rx="4" fill="#F3F6F8" stroke="#D2DCE5"/>
+<text x="1134.0" y="297" font-family="Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="#718394">0</text>
+<rect x="1150" y="269" width="28" height="28" rx="4" fill="#F3F6F8" stroke="#D2DCE5"/>
+<text x="1164.0" y="297" font-family="Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="#718394">0</text>
+<rect x="1180" y="269" width="28" height="28" rx="4" fill="#168A98" stroke="#D2DCE5"/>
+<text x="1194.0" y="297" font-family="Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="white">1</text>
+<rect x="1210" y="269" width="28" height="28" rx="4" fill="#F3F6F8" stroke="#D2DCE5"/>
+<text x="1224.0" y="297" font-family="Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="#718394">0</text>
+<rect x="1120" y="299" width="28" height="28" rx="4" fill="#F3F6F8" stroke="#D2DCE5"/>
+<text x="1134.0" y="327" font-family="Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="#718394">0</text>
+<rect x="1150" y="299" width="28" height="28" rx="4" fill="#168A98" stroke="#D2DCE5"/>
+<text x="1164.0" y="327" font-family="Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="white">1</text>
+<rect x="1180" y="299" width="28" height="28" rx="4" fill="#F3F6F8" stroke="#D2DCE5"/>
+<text x="1194.0" y="327" font-family="Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="#718394">0</text>
+<rect x="1210" y="299" width="28" height="28" rx="4" fill="#168A98" stroke="#D2DCE5"/>
+<text x="1224.0" y="327" font-family="Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="white">1</text>
+<rect x="1120" y="329" width="28" height="28" rx="4" fill="#168A98" stroke="#D2DCE5"/>
+<text x="1134.0" y="357" font-family="Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="white">1</text>
+<rect x="1150" y="329" width="28" height="28" rx="4" fill="#F3F6F8" stroke="#D2DCE5"/>
+<text x="1164.0" y="357" font-family="Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="#718394">0</text>
+<rect x="1180" y="329" width="28" height="28" rx="4" fill="#168A98" stroke="#D2DCE5"/>
+<text x="1194.0" y="357" font-family="Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="white">1</text>
+<rect x="1210" y="329" width="28" height="28" rx="4" fill="#F3F6F8" stroke="#D2DCE5"/>
+<text x="1224.0" y="357" font-family="Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="#718394">0</text>
+<text x="1010" y="370" class="micro">4 × 4 slice; other byte values omitted.</text>
+<text x="1010" y="520" class="small">The pair (00,00) occurs twice here.</text>
+<text x="1010" y="558" class="body">M(00,00):  2</text>
+<text x="1010" y="601" class="card-title">→</text>
+<text x="1045" y="608" class="body">set to 0 before scaling</text>
+<text x="1010" y="650" class="small">This is an engineering heuristic; its</text>
+<text x="1010" y="670" class="small">effect is not established by ablation.</text>
+<text x="540" y="520" class="small">Divide remaining counts by their maximum.</text>
+<text x="540" y="558" class="body">G = floor(255 · M / max(M))</text>
+<text x="540" y="596" class="small">Then quantize to 8-bit grayscale.</text>
+<text x="540" y="643" class="small">In this toy sequence, the remaining</text>
+<text x="540" y="664" class="small">nonzero counts normalize to 255.</text>
+<text x="540" y="674" class="small">Values lie in [0,255].</text>
+<text x="70" y="520" class="small">Apply the orthonormal DCT-II along</text>
+<text x="70" y="542" class="small">both matrix dimensions.</text>
+<rect x="84" y="575" width="116" height="92" fill="#EEF3F8" stroke="#D2DCE5"/>
+<path d="M113 575 V667 M84 598 H200" stroke="#D2DCE5" stroke-width="1"/>
+<path d="M142 575 V667 M84 621 H200" stroke="#D2DCE5" stroke-width="1"/>
+<path d="M171 575 V667 M84 644 H200" stroke="#D2DCE5" stroke-width="1"/>
+<text x="142" y="626" class="body" text-anchor="middle">2D</text>
+<text x="142" y="645" class="small" text-anchor="middle">DCT-II</text>
+<text x="70" y="675" class="small">Frequency coefficients F</text>
+<text x="70" y="818" class="body">D = log(1 + |F|)</text>
+<text x="70" y="853" class="small">Compress coefficient magnitude, then</text>
+<text x="70" y="874" class="small">rescale to an 8-bit image.</text>
+<text x="70" y="918" class="small">Sign/phase is not retained.</text>
+<text x="540" y="818" class="body">256 × 256</text>
+<path d="M625 812 H675" class="edge"/>
+<text x="700" y="818" class="body">224 × 224</text>
+<text x="540" y="857" class="small">Area interpolation; one channel, pixels</text>
+<text x="540" y="878" class="small">normalized to [0,1].</text>
+<rect x="544" y="901" width="120" height="35" rx="6" fill="#EAF5F6" stroke="#A9D5D9"/>
+<text x="604" y="924" class="small" text-anchor="middle">256 × 256</text>
+<path d="M678 918 H733" class="edge-cyan"/>
+<rect x="748" y="901" width="120" height="35" rx="6" fill="#EAF5F6" stroke="#A9D5D9"/>
+<text x="808" y="924" class="small" text-anchor="middle">224 × 224</text>
+<text x="1010" y="818" class="body">Single-channel image tensor</text>
+<text x="1010" y="855" class="small">Shape: 224 × 224 × 1</text>
+<text x="1010" y="884" class="small">Values: [0,1] before the model adapter</text>
+<rect x="1010" y="904" width="330" height="42" rx="9" class="node-cyan"/>
+<text x="1175" y="931" class="small" text-anchor="middle">MobileNetV2-based classifier</text>
+<path d="M455 257 H505" class="edge-cyan"/>
+<path d="M925 257 H975" class="edge-cyan"/>
+<path d="M1190 382 V410 H1190 V421" class="edge-cyan"/>
+<path d="M985 555 H933" class="edge-cyan"/>
+<path d="M515 555 H463" class="edge-cyan"/>
+<path d="M250 680 V720" class="edge-cyan"/>
+<path d="M455 853 H505" class="edge-cyan"/>
+<path d="M925 853 H975" class="edge-cyan"/>
+<text x="48" y="990" class="small">All data shown above are synthetic and schematic. The actual model receives transformed byte-derived images; this figure does not display an observed file or an inference result.</text>
+</svg>

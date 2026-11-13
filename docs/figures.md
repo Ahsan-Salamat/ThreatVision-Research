@@ -1,6 +1,6 @@
 # Figures
 
-Figures 1–5 describe the implemented workflow; Figure 6 presents proposed research. All six Mermaid diagrams were authored for this repository. No screenshots or sample images are included.
+Figures 1–5 describe the implemented workflow; Figure 6 presents proposed research. All six Mermaid diagrams were authored for this repository. The README also embeds four SVG figures; no application screenshot is included.
 
 ## Figure 1. System architecture
 
@@ -115,3 +115,16 @@ flowchart TD
 ```
 
 *Caption: Proposed study design only. None of these experiments has been completed or validated for ThreatVision.*
+
+## README SVG figures
+
+The README embeds four self-contained SVG figures in `../figures/`:
+
+1. [System overview](../figures/system-overview.svg): conceptual static and neural evidence paths with static-led labeling. Branches do not imply concurrent execution.
+2. [Preprocessing explanation](../figures/preprocessing-explained.svg): synthetic byte sequence and schematic matrix example; it is not an observed feature map or inference result.
+3. [Diagnostic response](../figures/diagnostic-response.svg): neural scores read from the private remediation CSV for two source files labeled benign PE and their overlay derivatives. The plot is descriptive and does not imply calibrated probabilities or independent samples.
+4. [Proposed research roadmap](../figures/research-roadmap.svg): proposed steps, none represented as completed work.
+
+No approved application-interface screenshot was found among the project assets inspected. The available logos and feature-image examples are not UI screenshots. Add a screenshot only after author approval, privacy review, and confirmation of redistribution rights.
+
+The Mermaid diagrams above remain editable textual descriptions of the original workflow, preprocessing, model, scoring, reporting sequence, and proposed study. The README SVGs provide a compact visual rendering for the repository landing page.
