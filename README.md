@@ -10,9 +10,17 @@ ThreatVision combines static PE analysis with a byte-bigram/DCT image path and a
 
 **Research question:** Does the byte-bigram/DCT neural representation provide incremental malware-classification information beyond simple file statistics and static PE features? The evidence below is a limited diagnostic pilot, not a malware-detection benchmark.
 
+## Project Demonstration
+
+The [project landing page](https://threatvision.amaaholding.com/) currently serves the earlier website. The [original analyst dashboard](https://threatvision.amaaholding.com/dashboard) redirects signed-out visitors to sign-in. A separate read-only demonstration is prepared locally and awaits publication. Live inference is unavailable in the demonstration. The Render service responded to a liveness check during the audit, and end-to-end inference remains unverified.
+
 ![System overview showing upload validation branching into static PE analysis and byte-bigram/DCT neural inference, then recombining in a static-led decision and analyst report.](figures/system-overview.svg)
 
 *Figure 1. ThreatVision system overview. The branches show distinct evidence paths and do not imply concurrent execution. Static criteria determine the final label; the neural score has bounded influence on the numeric risk score.*
+
+![Browser screenshot of the ThreatVision read-only analyst dashboard with an inference-unavailable notice and links to static PE evidence and the experimental record.](figures/analyst-dashboard.png)
+
+*Screenshot of the implemented read-only walkthrough running locally. The public site still serves the earlier frontend.*
 
 ## How bytes become model input
 
@@ -48,10 +56,6 @@ The first proposed experiment compares regularized logistic regression using pre
 
 *Figure 4. Proposed work only; none of these experiments is presented as completed.* See the detailed [future research plan](docs/future-research.md).
 
-## Application screenshot
-
-No approved analyst-interface screenshot was present in the inspected project assets. The local assets included logos and feature-image examples, but not a verifiable dashboard capture. A real interface screenshot can be added after author approval and review for private data and redistribution rights; no mock interface is substituted here.
-
 ## Documentation
 
 | Area | Documents |
@@ -65,4 +69,8 @@ No approved analyst-interface screenshot was present in the inspected project as
 
 ## Authorship and availability
 
-I independently implemented ThreatVision's technical system. The original FYP's formal university record remains a group submission, as described above. This repository publishes research documentation only; it excludes application source, model weights, input binaries, training data, and the sample-level measurements pending provenance and rights review. No repository reuse license has been selected. Citation metadata is provided in [CITATION.cff](CITATION.cff).
+I independently implemented ThreatVision's technical system. The original FYP's formal university record remains a group submission, as described above. This repository includes research documentation and initial evaluation tooling; it excludes application source, model weights, input binaries, training data, and the sample-level measurements pending provenance and rights review. No repository reuse license has been selected. Citation metadata is provided in [CITATION.cff](CITATION.cff).
+
+## Reproducibility tooling
+
+See [setup and safe tests](REPRODUCIBILITY.md) and the [current readiness assessment](docs/audits/PROFESSOR_OUTREACH_READINESS.md). Evaluation infrastructure is under validation. No new detection results are reported.
