@@ -17,9 +17,11 @@ def validate(path, data_root):
         rows = list(reader)
     if not rows:
         raise ValueError("Supply independently labeled PE samples; empty manifest")
+    for row in rows:
+        row["sha256"] = (row.get("sha256") or "").lower()
     seen_ids, seen_hashes, groups = set(), set(), {}
     for row in rows:
-        if any(not row[key].strip() for key in FIELDS):
+        if any(not (row.get(key) or "").strip() for key in FIELDS):
             raise ValueError("Required manifest fields must be populated")
         if row["sample_id"] in seen_ids or row["sha256"] in seen_hashes:
             raise ValueError("Duplicate ID or hash; resolve duplicates and label conflicts")

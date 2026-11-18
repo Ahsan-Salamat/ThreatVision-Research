@@ -28,3 +28,13 @@ This uses synthetic bytes only and prints repeat-run outputs explicitly as engin
 Historical training data and the original training program have not been recovered. No command to reproduce historical training can currently be supplied. A new architecture training implementation, automated feature extraction, source/temporal holdouts, group uncertainty intervals, remain incomplete. An evaluation smoke test uses minimal synthetic headers and invented scores, deletes its temporary results, and checks runner integration only. Do not treat the runner as validated scientific evidence.
 
 Use the existing [dataset provenance](docs/dataset-provenance.md), [model card](docs/model-card.md), [experimental record](docs/experimental-record.md), and [limitations](docs/findings-and-limitations.md) as the scientific record.
+
+Feature extraction from approved samples uses the production static-analysis module and verified checkpoint:
+
+```sh
+python -m research.extract --manifest /data/manifest.csv --data-root /data --checkpoint /restricted/threatvision_v01.keras --checkpoint-sha256 CHECKPOINT_SHA256 --static-source /path/to/ThreatVision/backend/python_scripts/static_analysis.py --output /data/features.csv
+```
+
+Generate fixed group, source, or temporal splits with `python -m research.splits`. Source and temporal holdouts fail when a lineage group crosses a boundary. The group strategy uses deterministic shuffled groups and rejects splits missing either class. The evaluator reports a family/lineage cluster bootstrap only when at least ten independent test groups exist. Its interval is conditional on the held-out data and is not a substitute for additional sources or dates. Static features are currently limited to size, global entropy, section count, and signature status. Static-only refers to logistic regression on those fields, not the production heuristic scorer.
+
+A new training pipeline can initialize from the saved architecture topology with fresh random weights. It is not a reconstruction of historical training. Use `requirements-model.txt`, a validated manifest, and an authorized input cohort. `--smoke --cpu` performs one epoch on two samples per partition for engineering checks only. Do not interpret its output as a result.

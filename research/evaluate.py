@@ -64,7 +64,14 @@ def main():
         RocCurveDisplay.from_predictions(y[test], score, name=name, ax=ax)
     output = Path(args.output)
     output.mkdir(parents=True, exist_ok=False)
-    report = {"metrics": results, "threshold": 0.5, "threshold_method": "fixed in advance",
+    from .uncertainty import intervals
+    test_rows = [row for row in rows if row["split"] == "test"]
+    # Family groups are conservatively combined; lineage is used when family is unknown.
+    groups = [row.get("malware_family") or row["lineage_id"] for row in test_rows]
+    report = {"uncertainty": intervals(y[test], scores, groups),
+              "source_counts": {source: sum(row["source"] == source for row in test_rows)
+                                for source in sorted({row["source"] for row in test_rows})},
+              "metrics": results, "threshold": 0.5, "threshold_method": "fixed in advance",
               "seed": 17, "dataset_version": rows[0]["dataset_version"], "model_id": args.model_id,
               "split_strategy": "owner-supplied fixed group-validated manifest",
               "python": platform.python_version(), "sklearn": sklearn.__version__,

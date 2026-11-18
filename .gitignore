@@ -56,3 +56,6 @@
 !.github/workflows/research.yml
 
 !docs/audits/verified-environment.txt
+
+!requirements-model.txt
+!requirements-model.txt
