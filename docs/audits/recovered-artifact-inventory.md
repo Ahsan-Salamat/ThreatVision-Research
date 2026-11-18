@@ -35,3 +35,7 @@ Eight notebooks are present. The two ThreatVision-named notebooks contain origin
 ## Safe next steps
 
 Use a compatible isolated environment to load the checkpoint with `compile=False, safe_mode=True`, record software versions and repeatability, and infer only on a harmless synthetic PE fixture. Do not execute PE files. Preserve the archive unchanged. Resolve checkpoint lineage against version history and earlier notebook revisions. Recover actual authorized data and split membership before interpreting training metrics. No detected result in these files constitutes an independently validated malware benchmark.
+
+## Later independent cross-check
+
+A further review of saved notebook outputs identified a 4,000-row 2,800/800/400 historical dataset partition and two **unreproduced** older test-accuracy printouts (67.00% scratch CNN; 61.50% MobileNetV2), plus a distinct later 79,997-image directory inventory and a potential training/validation partition-overlap risk. The archive metadata, original notebook code, and the 22-row anomalous log remain insufficient to establish a completed 256×256 training lineage or a 224×224 production evaluation. For details, see the [full reconciliation](RECOVERY_CROSSCHECK_2026-11-18.md).

@@ -38,6 +38,18 @@ The supplied pilot CSV contains 46 artifacts: ten rows labeled benign PE, twenty
 
 *Figure 3. Neural scores for two selected files labeled benign PE in the supplied CSV and their four overlay derivatives. Scores are sigmoid outputs, not calibrated malware probabilities. The interventions change size and byte representation together; they do not isolate entropy. Rows are paired by source and are not independent experimental units.*
 
+## Recovery and provenance update (18 November 2026)
+
+Two original Google Drive exports were recovered and inspected read-only. They contain **eight Colab notebooks**, a structurally intact **earlier 256 × 256 × 1 MobileNetV2 checkpoint** (`best_model.keras`; SHA-256 prefix `62feb539`), a **22-row training log with anomalous validation metrics**, and a **4,000-row balanced image manifest** (2,000 of each label). The `ThreatVision.ipynb` saved outputs report separate, historical **67.00% scratch-CNN** and **61.50% MobileNetV2** test-accuracy printouts on a 4,000-image workflow. These are **unreproduced notebook printouts**, not validated metrics of the deployed checkpoint. The original images and PE files were **not supplied** with the exports.
+
+A later `ThreatVisionFInal.ipynb` output records **39,999 benign plus 39,998 malware image-folder entries**, but only shows the **start** of a 256 × 256 training run. Its train/validation directory-loader calls use incompatible shuffling settings, creating a potential split-overlap risk. No complete, independently verified final training history can be claimed from it. Another recovered notebook concerns separate family-classification experiments; third-party reference notebooks are not counted as original project performance.
+
+**Model versions must stay distinct:** the recovered 256 × 256 checkpoint is **not the documented 224 × 224 production checkpoint** (`threatvision_v01.keras`), and its Conv2D-to-Rescaling layer order differs from the later notebook's implementation. The earlier model passed ZIP integrity checks but was not loaded in TensorFlow. The 224 × 224 checkpoint metadata is in this repo, but its original model bytes were not supplied in the recovery exports. Detailed source-by-source findings: [recovery reconciliation](docs/audits/RECOVERY_CROSSCHECK_2026-11-18.md) and [sanitized verification summary](docs/audits/recovered-artifact-verified-summary.json).
+
+**Historical best-accuracy recollection (unverified):** The developer recalls approximately **85%** in a MobileNetV2 experiment, but **none of the supplied notebook outputs or logs establishes that number**, and the relevant split, checkpoint and data provenance are unknown. The highest saved `val_accuracy` in the 22-row CSV is **80.27%**; it has anomalous `val_auc=0.0` for all rows and is not independent test evidence. The 85% figure is **not a validated result** and is excluded from professor outreach performance claims. See the [85% claim audit](docs/audits/HISTORICAL_ACCURACY_CLAIM.md) and [reconstructed verification notebook](notebooks/RECONSTRUCTED_MobileNetV2_Validation.ipynb).
+
+The only **independently executed** checks in this research repo are safe engineering tests; no genuine, independently labeled malware benchmark is claimed.
+
 ## What the evidence supports
 
 | Established in this record | Observed in the pilot | Still unproven |
@@ -67,10 +79,14 @@ The first proposed experiment compares regularized logistic regression using pre
 | Future research and prospectus | [Future research](docs/future-research.md) · [Prospectus (Markdown)](docs/research-prospectus.md) · [Prospectus (DOCX)](docs/research-prospectus.docx) |
 | References and citation | [References](docs/references.md) · [BibTeX](references.bib) · [CITATION.cff](CITATION.cff) |
 
+## Academic outreach materials
+
+For professors, start with the [one-page research summary (PDF)](academic-outreach/ThreatVision_One_Page_Research_Summary.pdf), [two-page prospectus (PDF)](docs/research-prospectus.pdf), and [academic evidence index](academic-outreach/EVIDENCE_INDEX.md). The [ready-to-personalize email](academic-outreach/PROFESSOR_EMAIL_TEMPLATE.md) deliberately does not claim validated malware performance or a working public inference demo. The [claim policy](academic-outreach/CLAIM_POLICY.md) lists safe descriptions and forbidden unsupported claims. Admission, funding, and supervision must be assessed through each institution's formal process.
+
 ## Authorship and availability
 
 I independently implemented ThreatVision's technical system. The original FYP's formal university record remains a group submission, as described above. This repository includes research documentation and initial evaluation tooling; it excludes application source, model weights, input binaries, training data, and the sample-level measurements pending provenance and rights review. No repository reuse license has been selected. Citation metadata is provided in [CITATION.cff](CITATION.cff).
 
 ## Reproducibility tooling
 
-See [setup and safe tests](REPRODUCIBILITY.md) and the [current readiness assessment](docs/audits/PROFESSOR_OUTREACH_READINESS.md). Research infrastructure passes eleven safe tests. No new detection results are reported. Recovered original notebooks, model metadata and training-log cautions are summarized in the [artifact inventory](docs/audits/recovered-artifact-inventory.md). Feature evaluation requires a matching extraction provenance sidecar.
+See [setup and safe tests](REPRODUCIBILITY.md) and the [current readiness assessment](docs/audits/PROFESSOR_OUTREACH_READINESS.md). Research infrastructure passes fourteen safe tests, including three additional archive-metadata audit checks. No new detection results are reported. Recovered original notebooks, model metadata and training-log cautions are summarized in the [artifact inventory](docs/audits/recovered-artifact-inventory.md) and [source-by-source reconciliation](docs/audits/RECOVERY_CROSSCHECK_2026-11-18.md). Feature evaluation requires a matching extraction provenance sidecar.

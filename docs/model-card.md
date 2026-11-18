@@ -28,9 +28,13 @@ The neural branch consumes an image derived from adjacent byte-pair counts and D
 
 ## Training data and evaluation
 
-The local dataset name and provenance, collection dates, labels, sample counts, duplicate controls, partitions, training history, and model-selection record are unavailable. Use of MaleX to train this checkpoint has not been verified. The saved compile configuration records optimizer settings but does not establish the complete training history or data.
+For the **documented 224×224 deployed checkpoint**, the dataset identity, provenance, dates, labels, duplicate controls, split membership, complete epoch history, and model-selection record remain unverified. Separately recovered 4,000-image notebook outputs, a later 79,997-image folder inventory, and a 22-row training CSV exist, but **none is cryptographically or procedurally tied to this deployed checkpoint**. Use of MaleX to train this specific checkpoint has not been verified. The saved compile configuration records optimizer settings but does not establish the complete training history or data.
 
 No independently documented held-out metrics are available. This repository reports no local ROC-AUC, accuracy, precision, recall, F1, false-positive rate, or calibrated operating threshold. The supplied diagnostic pilot contains ten rows labeled benign PE, twenty transformations of two of those files, and synthetic or out-of-domain probes; it contains no known-malicious PE cohort. Its neural scores and final labels are exploratory observations, not performance estimates. CPU timing observations are not a controlled benchmark.
+
+## Historical model and notebook evidence (not deployed-model validation)
+
+An earlier `best_model.keras` export is structurally readable (Keras 3.13.2, 256×256×1 input, SHA-256 prefix `62feb539`); it differs from the documented 224×224 production checkpoint and the later training script. A recovered older notebook prints test-accuracy figures of **67.00%** for a scratch CNN and **61.50%** for a separate MobileNetV2 workflow on a 4,000-image subset. These are historical, not independently reproducible performance estimates and are **not results for the deployed model**. The developer recalls a separate **~85% MobileNetV2 accuracy** result, but its original metric type and supporting run are missing; **do not attribute it to either checkpoint or cite it as validation**. [Claim-evidence register](audits/HISTORICAL_ACCURACY_CLAIM.md). The recovered 22-row training log reports `val_auc=0.0` and `val_precision=1.0` throughout; these anomalous validation metrics are unusable for detection-performance claims without recovered labels/splits. [Evidence reconciliation](audits/RECOVERY_CROSSCHECK_2026-11-18.md).
 
 ## Ethical and technical considerations
 

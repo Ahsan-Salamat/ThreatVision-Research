@@ -58,6 +58,19 @@
 !docs/audits/verified-environment.txt
 
 !requirements-model.txt
-!requirements-model.txt
 
 !docs/audits/recovered-artifact-inventory.md
+
+!docs/audits/recovered-artifact-verified-summary.json
+
+# Approved, reviewed outreach handouts
+!docs/research-prospectus.pdf
+!academic-outreach/ThreatVision_One_Page_Research_Summary.docx
+!academic-outreach/ThreatVision_One_Page_Research_Summary.pdf
+!DELIVERY_NOTES.md
+
+# Only the explicitly labeled new reconstruction is distributable; exclude all original Colab notebooks.
+!notebooks/
+!notebooks/RECONSTRUCTED_MobileNetV2_Validation.ipynb
+
+!LOCAL_RECONCILIATION_REPORT.md

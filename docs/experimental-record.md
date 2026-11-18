@@ -8,7 +8,7 @@ The local `threatvision_v01.keras` archive was inspected directly. Its Keras con
 
 The archive's top-level `compile_config` records Adam with learning rate `4.999999873689376 × 10⁻⁶`, β₁ = 0.9, β₂ = 0.999, and ε = 10⁻⁷, along with binary cross-entropy and accuracy, ROC AUC, precision, and recall metrics. This is saved compile configuration, not an epoch history or evidence of the data used. A debugging script references a separate `phase2_best.keras` path and loads it with `compile=False`. That checkpoint is unavailable, and no artifact hash or export record establishes that it is the source of `threatvision_v01.keras`.
 
-Training scripts, the original training converter, epoch histories, dataset manifests, sample-level labels, and split membership are unavailable. The local training data cannot be identified as MaleX or another named corpus. Literature metrics are not local checkpoint results.
+Original notebook files, a separate 256×256 MobileNetV2 archive, a 4,000-row image manifest, and a 22-row training log were subsequently recovered. They do **not** establish the exact training history or split membership of the **224×224 deployed checkpoint** described above, nor do they reproduce this 46-row diagnostic pilot. The recovered log shows `val_auc=0.0` and `val_precision=1.0` throughout, and the later notebook has a possible train/validation split overlap. See the [source-by-source recovery reconciliation](audits/RECOVERY_CROSSCHECK_2026-11-18.md). Literature metrics and historical notebook printouts are not independently validated deployed-checkpoint results.
 
 ## Preprocessing used in the diagnostic record
 

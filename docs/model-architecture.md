@@ -4,6 +4,10 @@
 
 The deployed inference artifact is `threatvision_v01.keras`. Its serialized configuration identifies a MobileNetV2 backbone (`mobilenetv2_1.00_224`), a 224 × 224 × 1 float input normalized to `[0,1]`, and one sigmoid output interpreted by the application as a neural score. The archive metadata records Keras 3.14.1 and a save time of 2026-05-15. Counts recomputed from serialized layer shapes and trainability flags are 2,422,084 total parameters, 1,512,580 trainable, and 909,504 non-trainable. Seventeen of the backbone's 154 nested layers are marked trainable. The earlier 2,424,196 total is unsupported; the reason for the discrepancy is not established.
 
+## Recovered earlier model — a different checkpoint
+
+The original Drive export includes `best_model.keras` (SHA-256 `62feb539c30edb4b2849ac760d9b9e41c8842da000e9bfc9c653b08861173102`). Its serialized Keras 3.13.2 configuration has a **256 × 256 × 1** input and a top-level sequence `Input → grayscale_to_rgb Conv2D → preprocess Rescaling → MobileNetV2 → GAP → dropout → Dense(128) → dropout → sigmoid`. It contains **no top-level saved augmentation layers**. This is distinct both from the following documented 224 × 224 deployed topology and from the later `ThreatVisionFInal.ipynb` training script, which places Rescaling **before** the channel adapter and includes augmentation. Neither model can be silently substituted for the other; the earlier checkpoint is **archive-verified but not runtime-verified**. [Full reconciliation](audits/RECOVERY_CROSSCHECK_2026-11-18.md).
+
 ## Layer sequence
 
 1. Input spectrogram: `(224,224,1)`.

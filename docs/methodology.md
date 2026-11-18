@@ -38,6 +38,10 @@ The separate static-analysis path extracts PE headers and sections, imports, sec
 
 The sigmoid output is reported as a neural score, not a calibrated probability. Static-analysis criteria determine the final malware/benign label; neural inference can adjust the numeric threat score by at most five points. The rule weights and thresholds have not been calibrated against an independent labeled evaluation set.
 
+## Scope of this exact preprocessing pipeline
+
+The 224×224 resize and `[0,1]` tensor normalization described above document the **current research/deployed application preprocessing path**. A recovered earlier model takes **256×256×1** input, and a later training notebook describes another 256×256 pipeline. It is not established that their input scaling, resize, augmentation and channel-adapter placement were equivalent. The research pipeline must not automatically feed the recovered earlier checkpoint with 224×224 tensors or claim that it faithfully reconstructs all historical experiments. See [model architecture](model-architecture.md) and [reconciliation audit](audits/RECOVERY_CROSSCHECK_2026-11-18.md).
+
 ## Interpretation limits
 
 The frequency image does not directly encode program intent. Packing, compression, padding, file format, and source distribution can influence byte patterns. Prior work has shown that static malware classifiers can learn packer-related signals that do not generalize to unseen packers [2]. The available pilot shows different score changes for overlays on two source files, but each overlay changes multiple properties. Whether this model uses entropy or another shortcut remains untested. A controlled evaluation is proposed in [Future research](future-research.md).

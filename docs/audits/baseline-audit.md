@@ -1,5 +1,7 @@
 # Baseline audit — 17 November 2026
 
+**Historical snapshot:** This baseline predates the November 18 recovery of original Colab notebooks, the 256×256 checkpoint, and training logs. Its references to missing historic materials are superseded by the [recovery crosscheck](RECOVERY_CROSSCHECK_2026-11-18.md).
+
 The research checkout is a separate documentation repository on main at cb27efa. Existing README, ignore-file and screenshot changes were present before this pass. Application source is in sibling frontend and backend Git checkouts. This pass is scoped to ThreatVision-Research as requested.
 
 | Claim | Local evidence |
