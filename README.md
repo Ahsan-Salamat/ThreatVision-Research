@@ -73,4 +73,4 @@ I independently implemented ThreatVision's technical system. The original FYP's 
 
 ## Reproducibility tooling
 
-See [setup and safe tests](REPRODUCIBILITY.md) and the [current readiness assessment](docs/audits/PROFESSOR_OUTREACH_READINESS.md). Research infrastructure passes eleven safe tests. No new detection results are reported. Feature evaluation requires a matching extraction provenance sidecar.
+See [setup and safe tests](REPRODUCIBILITY.md) and the [current readiness assessment](docs/audits/PROFESSOR_OUTREACH_READINESS.md). Research infrastructure passes eleven safe tests. No new detection results are reported. Recovered original notebooks, model metadata and training-log cautions are summarized in the [artifact inventory](docs/audits/recovered-artifact-inventory.md). Feature evaluation requires a matching extraction provenance sidecar.

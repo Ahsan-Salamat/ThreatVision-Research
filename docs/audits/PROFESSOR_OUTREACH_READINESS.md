@@ -3,7 +3,7 @@
 | Category | Decision | Evidence |
 | --- | --- | --- |
 | Experimental evidence | PARTIAL | Manifest validation and static/neural/combined comparison infrastructure exist. The original diagnostic cohort lacks independently verified malicious examples. No new detection results were generated. |
-| Reproducibility | PARTIAL | Runnable source, safe tests and CI were added. Historical training code, training partitions and checkpoint lineage remain unavailable. Eleven tests passed in a clean virtual environment, including the latest provenance checks and bootstrap interval test. TensorFlow installation was attempted but its 200 MB wheel repeatedly timed out. Checkpoint runtime loading and inference remain unverified. |
+| Reproducibility | PARTIAL | Runnable source, safe tests and CI were added. Recovered notebooks, a structurally intact checkpoint, and a training log improve historical provenance. Exact notebook-to-checkpoint lineage and train/validation/test membership remain unknown. Eleven tests passed in a clean virtual environment, including the latest provenance checks and bootstrap interval test. TensorFlow installation timed out on its 200 MB wheel. Checkpoint runtime loading and inference remain unverified. |
 | Demonstration | BLOCKED | A fresh web-tool request could not access the public demo; curl subsequently returned HTTP 200 from Netlify. Rendered behavior remains unverified. The sibling frontend has a local walkthrough, previously tested on 14 November. This pass is limited to the research directory and does not establish current production functionality. |
 | Professor outreach | PARTIAL | The repository has a defensible research question, inspectable initial tooling, scientific limitations and linked prospectus. Public demonstration and complete experiment reproduction remain unresolved. |
 
@@ -15,9 +15,9 @@ On 18 November 2026, the isolated Python 3.13 environment with research dependen
 
 ## Remaining implementation and evidence
 
-- Supply independently labeled benign and malicious PE cohorts with authorized access and trustworthy lineage, family and source metadata.
-- Recover or document original training provenance. Verify checkpoint loading, stochastic augmentation behavior and repeated inference under a compatible TensorFlow environment.
-- Run the new extractor and training paths in a compatible TensorFlow environment. The model artifact is outside the research repository.
+- The recovered 4,000-row image manifest has no associated images or binaries and does not verify its labels or lineage. Obtain authorized independent PE samples and documented splits before performance evaluation.
+- Resolve model lineage against earlier notebook revisions. Investigate the recovered training log, whose 22 val_auc values are 0.0 and val_precision values are 1.0, against the original validation labels and metric configuration. Verify checkpoint loading, stochastic augmentation behavior and repeated inference under a compatible TensorFlow environment.
+- Run the new extractor and training paths in a compatible TensorFlow environment. The recovered model remains outside the research repository. See the [recovered artifact inventory](recovered-artifact-inventory.md).
 - Run end-to-end extraction and training with the owner-held checkpoint and authorized samples. Current tests do not execute TensorFlow or the production static analyzer integration.
 - Validate the current public demonstration through browser testing, including results and unavailable-service states. Owner approval is required before publishing local changes.
 - Read the [baseline audit](baseline-audit.md) for source evidence, and [reproduction commands](../../REPRODUCIBILITY.md) for the current tooling.
