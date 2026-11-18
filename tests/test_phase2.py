@@ -24,6 +24,18 @@ class PhaseTwoTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "boundaries"):
             assign(rows, "source", test_source="c", validation_source="b")
 
+    def test_cluster_bootstrap_is_deterministic_and_balanced(self):
+        import numpy as np
+        from research.uncertainty import intervals
+        labels = np.array([0, 1] * 10)
+        groups = np.array([f"group-{i}" for i in range(20)])
+        score = np.array([0.1, 0.9] * 10)
+        result = intervals(labels, {"static": score, "combined": score,
+                                    "neural": score}, groups, repetitions=100, seed=9)
+        self.assertEqual(result["status"], "conditional cluster bootstrap")
+        self.assertEqual(result["valid_resamples"], 100)
+        self.assertEqual(result["combined_minus_static_average_precision"], [0.0, 0.0])
+
     def test_insufficient_uncertainty(self):
         from research.uncertainty import intervals
         self.assertIn("insufficient", intervals([0,1],{},["a","b"])["status"])

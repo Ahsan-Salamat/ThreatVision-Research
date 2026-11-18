@@ -4,6 +4,7 @@ import hashlib
 import json
 import platform
 import zipfile
+import math
 from pathlib import Path
 
 
@@ -44,14 +45,22 @@ def main():
         if args.smoke:
             subset = [next(r for r in subset if r["ground_truth_label"] == label)
                       for label in ("benign","malicious")]
-        images = np.concatenate([tensor((Path(args.data_root)/r["path"]).read_bytes()) for r in subset])
         labels = np.array([r["ground_truth_label"] == "malicious" for r in subset], dtype=np.float32)
-        selected[split] = (images, labels)
+        paths = [str(Path(args.data_root) / r["path"]) for r in subset]
+        dataset = tf.data.Dataset.from_tensor_slices((paths, labels))
+        def transform(path, label):
+            raw = tf.io.read_file(path)
+            image = tf.numpy_function(lambda value: tensor(value.numpy()), [raw], tf.float32)
+            image.set_shape((1, 224, 224, 1))
+            return tf.squeeze(image, axis=0), label
+        dataset = dataset.map(transform, num_parallel_calls=1, deterministic=True)
+        dataset = dataset.batch(args.batch_size).prefetch(1)
+        selected[split] = (dataset, labels)
     destination = Path(args.output)
     destination.mkdir(parents=True, exist_ok=False)
     labels = selected["train"][1]
     weights = {i: len(labels)/(2*int((labels == i).sum())) for i in (0,1)}
-    model.fit(*selected["train"], validation_data=selected["validation"],
+    model.fit(selected["train"][0], validation_data=selected["validation"][0],
               epochs=1 if args.smoke else args.epochs, batch_size=args.batch_size,
               class_weight=weights,
               callbacks=[tf.keras.callbacks.EarlyStopping(patience=5, restore_best_weights=True),

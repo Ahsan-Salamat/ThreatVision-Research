@@ -39,8 +39,13 @@ class EvaluationSmoke(unittest.TestCase):
                     writer.writerows(rows)
             feature_path = root / "features.csv"
             manifest_path = root / "manifest.csv"
-            sidecar = {"manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
-                       "checkpoint_sha256": "abc123",
+            static_source = root / "static.py"
+            static_source.write_text("# synthetic static provenance fixture\n")
+            preprocessing_source = Path(__file__).parents[1] / "research" / "preprocessing.py"
+            sidecar = {"preprocessing_sha256": hashlib.sha256(preprocessing_source.read_bytes()).hexdigest(),
+                       "static_source_sha256": hashlib.sha256(static_source.read_bytes()).hexdigest(),
+                       "manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
+                       "checkpoint_sha256": "a"*64,
                        "features_sha256": hashlib.sha256(feature_path.read_bytes()).hexdigest(),
                        "samples": len(features)}
             (root / "features.metadata.json").write_text(json.dumps(sidecar))
@@ -48,7 +53,7 @@ class EvaluationSmoke(unittest.TestCase):
             environment["THREATVISION_SOURCE_REVISION"] = "unknown"
             subprocess.run([sys.executable, "-m", "research.evaluate", "--manifest", str(manifest_path),
                             "--data-root", str(root), "--features", str(feature_path),
-                            "--model-id", "abc123", "--output", str(root/"results")], check=True, env=environment)
+                            "--model-id", "a"*64, "--static-source", str(static_source), "--output", str(root/"results")], check=True, env=environment)
             report = json.loads((root/"results/metrics.json").read_text())
             self.assertEqual(set(report["metrics"]), {"static","neural","combined"})
             self.assertEqual(report["dataset_version"], "synthetic-smoke-only")
@@ -59,7 +64,26 @@ class EvaluationSmoke(unittest.TestCase):
             (root / "features.metadata.json").write_text(json.dumps(sidecar))
             failed = subprocess.run([sys.executable, "-m", "research.evaluate",
                 "--manifest", str(manifest_path), "--data-root", str(root),
-                "--features", str(feature_path), "--model-id", "abc123",
+                "--features", str(feature_path), "--model-id", "a"*64, "--static-source", str(static_source),
                 "--output", str(root/"bad-results")], capture_output=True, text=True)
             self.assertNotEqual(failed.returncode, 0)
             self.assertIn("provenance mismatch", failed.stderr)
+            sidecar["checkpoint_sha256"] = "a"*64
+            sidecar.pop("preprocessing_sha256")
+            (root / "features.metadata.json").write_text(json.dumps(sidecar))
+            missing = subprocess.run([sys.executable, "-m", "research.evaluate",
+                "--manifest", str(manifest_path), "--data-root", str(root),
+                "--features", str(feature_path), "--model-id", "a"*64,
+                "--static-source", str(static_source), "--output", str(root/"missing-results")],
+                capture_output=True, text=True)
+            self.assertNotEqual(missing.returncode, 0)
+            self.assertIn("preprocessing_sha256", missing.stderr)
+            sidecar["preprocessing_sha256"] = "0"*64
+            (root / "features.metadata.json").write_text(json.dumps(sidecar))
+            mismatch = subprocess.run([sys.executable, "-m", "research.evaluate",
+                "--manifest", str(manifest_path), "--data-root", str(root),
+                "--features", str(feature_path), "--model-id", "a"*64,
+                "--static-source", str(static_source), "--output", str(root/"mismatch-results")],
+                capture_output=True, text=True)
+            self.assertNotEqual(mismatch.returncode, 0)
+            self.assertIn("preprocessing_sha256", mismatch.stderr)

@@ -31,6 +31,7 @@ def main():
     parser.add_argument("--data-root", required=True)
     parser.add_argument("--features", required=True)
     parser.add_argument("--model-id", required=True)
+    parser.add_argument("--static-source", required=True)
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     from .validate import validate
@@ -40,10 +41,16 @@ def main():
     if not sidecar_path.is_file():
         raise ValueError("Missing extraction provenance sidecar")
     sidecar = json.loads(sidecar_path.read_text())
+    model_id = args.model_id.lower()
+    if len(model_id) != 64 or any(char not in "0123456789abcdef" for char in model_id):
+        raise ValueError("--model-id must be a SHA-256 hex digest")
+    preprocessing_path = Path(__file__).with_name("preprocessing.py")
     expected = {
         "manifest_sha256": hashlib.sha256(Path(args.manifest).read_bytes()).hexdigest(),
         "checkpoint_sha256": args.model_id.lower(),
         "features_sha256": hashlib.sha256(feature_path.read_bytes()).hexdigest(),
+        "static_source_sha256": hashlib.sha256(Path(args.static_source).read_bytes()).hexdigest(),
+        "preprocessing_sha256": hashlib.sha256(preprocessing_path.read_bytes()).hexdigest(),
     }
     for key, value in expected.items():
         if sidecar.get(key) != value:
@@ -103,11 +110,14 @@ def main():
     groups = [row.get("malware_family") or row["lineage_id"] for row in test_rows]
     revision = source_revision(Path(__file__).parent)
     source_files = sorted(Path(__file__).parent.glob("*.py"))
+    preprocessing_hash = hashlib.sha256((Path(__file__).parent/"preprocessing.py").read_bytes()).hexdigest()
     snapshot_hash = hashlib.sha256()
     for source_file in source_files:
         snapshot_hash.update(source_file.name.encode())
         snapshot_hash.update(source_file.read_bytes())
     report = {"source_snapshot_sha256": snapshot_hash.hexdigest(),
+              "preprocessing_sha256": preprocessing_hash,
+              "static_source_sha256": expected["static_source_sha256"],
               "uncertainty": intervals(y[test], scores, groups),
               "source_counts": {source: sum(row["source"] == source for row in test_rows)
                                 for source in sorted({row["source"] for row in test_rows})},

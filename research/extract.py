@@ -57,6 +57,8 @@ def main():
     parser.add_argument("--static-source", required=True)
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
+    if len(args.checkpoint_sha256) != 64 or any(c not in "0123456789abcdefABCDEF" for c in args.checkpoint_sha256):
+        parser.error("--checkpoint-sha256 must be a SHA-256 hex digest")
     rows = validate(args.manifest, args.data_root)
     model = load_checkpoint(args.checkpoint, args.checkpoint_sha256)
     static = load_source(args.static_source)
@@ -77,7 +79,8 @@ def main():
         writer.writeheader()
         writer.writerows(results)
     os.replace(temporary, destination)
-    metadata = {"checkpoint_sha256": args.checkpoint_sha256,
+    metadata = {"checkpoint_sha256": args.checkpoint_sha256.lower(),
+                "preprocessing_sha256": hashlib.sha256(Path(__file__).with_name("preprocessing.py").read_bytes()).hexdigest(),
                 "static_source_sha256": hashlib.sha256(Path(args.static_source).read_bytes()).hexdigest(),
                 "manifest_sha256": hashlib.sha256(Path(args.manifest).read_bytes()).hexdigest(),
                 "features_sha256": hashlib.sha256(destination.read_bytes()).hexdigest(),

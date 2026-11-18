@@ -25,4 +25,4 @@ The dashboard presents threat indicators, scan metadata, and the DCT image. Its 
 
 ## Repository contents
 
-This public repository contains written documentation only. It does not contain the application source, model weights, malware binaries, private datasets, credentials, or sample feature images. The interface generates a feature image for a scan; that runtime behavior does not mean example images are included here.
+This public repository contains research documentation, safe test fixtures, and runnable validation, preprocessing, feature extraction, evaluation, splitting, uncertainty, checkpoint-probe, and training modules. The production application source and trained checkpoint are stored separately and are not included. It does not contain the application source, model weights, malware binaries, private datasets, credentials, or sample feature images. The interface generates a feature image for a scan; that runtime behavior does not mean example images are included here.
