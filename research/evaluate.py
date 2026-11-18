@@ -1,11 +1,29 @@
 """Compare supplied static features and frozen scores using fixed manifest splits."""
 import argparse
 import csv
+import os
 import hashlib
 import json
 import platform
 import subprocess
 from pathlib import Path
+
+def source_revision(source_root):
+    explicit = os.environ.get("THREATVISION_SOURCE_REVISION")
+    if explicit:
+        return explicit
+    try:
+        top = Path(subprocess.check_output(
+            ["git", "rev-parse", "--show-toplevel"], cwd=source_root,
+            text=True, stderr=subprocess.DEVNULL).strip()).resolve()
+        source_root = Path(source_root).resolve()
+        source_root.relative_to(top)
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=source_root,
+            text=True, stderr=subprocess.DEVNULL).strip()
+    except (subprocess.CalledProcessError, FileNotFoundError, ValueError):
+        return "unknown"
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -17,6 +35,19 @@ def main():
     args = parser.parse_args()
     from .validate import validate
     rows = validate(args.manifest, args.data_root)
+    feature_path = Path(args.features)
+    sidecar_path = feature_path.with_suffix(".metadata.json")
+    if not sidecar_path.is_file():
+        raise ValueError("Missing extraction provenance sidecar")
+    sidecar = json.loads(sidecar_path.read_text())
+    expected = {
+        "manifest_sha256": hashlib.sha256(Path(args.manifest).read_bytes()).hexdigest(),
+        "checkpoint_sha256": args.model_id.lower(),
+        "features_sha256": hashlib.sha256(feature_path.read_bytes()).hexdigest(),
+    }
+    for key, value in expected.items():
+        if sidecar.get(key) != value:
+            raise ValueError(f"Feature provenance mismatch: {key}")
     import numpy as np
     import sklearn
     from sklearn.pipeline import make_pipeline
@@ -31,6 +62,8 @@ def main():
         columns = [k for k in reader.fieldnames if k.startswith("static_")]
         features = list(reader)
     ids = [r["sample_id"] for r in features]
+    if sidecar.get("samples") != len(features):
+        raise ValueError("Feature provenance mismatch: sample count")
     if not columns or len(ids) != len(set(ids)) or set(ids) != {r["sample_id"] for r in rows}:
         raise ValueError("Supply unique matching IDs, static_* numeric columns, and neural_score")
     mapping = {r["sample_id"]: r for r in features}
@@ -68,14 +101,21 @@ def main():
     test_rows = [row for row in rows if row["split"] == "test"]
     # Family groups are conservatively combined; lineage is used when family is unknown.
     groups = [row.get("malware_family") or row["lineage_id"] for row in test_rows]
-    report = {"uncertainty": intervals(y[test], scores, groups),
+    revision = source_revision(Path(__file__).parent)
+    source_files = sorted(Path(__file__).parent.glob("*.py"))
+    snapshot_hash = hashlib.sha256()
+    for source_file in source_files:
+        snapshot_hash.update(source_file.name.encode())
+        snapshot_hash.update(source_file.read_bytes())
+    report = {"source_snapshot_sha256": snapshot_hash.hexdigest(),
+              "uncertainty": intervals(y[test], scores, groups),
               "source_counts": {source: sum(row["source"] == source for row in test_rows)
                                 for source in sorted({row["source"] for row in test_rows})},
               "metrics": results, "threshold": 0.5, "threshold_method": "fixed in advance",
               "seed": 17, "dataset_version": rows[0]["dataset_version"], "model_id": args.model_id,
               "split_strategy": "owner-supplied fixed group-validated manifest",
               "python": platform.python_version(), "sklearn": sklearn.__version__,
-              "revision": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
+              "revision": revision,
               "manifest_sha256": hashlib.sha256(Path(args.manifest).read_bytes()).hexdigest(),
               "features_sha256": hashlib.sha256(Path(args.features).read_bytes()).hexdigest()}
     (output / "metrics.json").write_text(json.dumps(report, indent=2))

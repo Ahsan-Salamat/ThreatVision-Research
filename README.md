@@ -73,4 +73,4 @@ I independently implemented ThreatVision's technical system. The original FYP's 
 
 ## Reproducibility tooling
 
-See [setup and safe tests](REPRODUCIBILITY.md) and the [current readiness assessment](docs/audits/PROFESSOR_OUTREACH_READINESS.md). Evaluation infrastructure is under validation. No new detection results are reported.
+See [setup and safe tests](REPRODUCIBILITY.md) and the [current readiness assessment](docs/audits/PROFESSOR_OUTREACH_READINESS.md). Research infrastructure passes ten safe tests. No new detection results are reported. Feature evaluation requires a matching extraction provenance sidecar.

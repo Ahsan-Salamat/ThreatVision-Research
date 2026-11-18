@@ -8,6 +8,8 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import hashlib
+import os
 
 class EvaluationSmoke(unittest.TestCase):
     def test_runner(self):
@@ -35,10 +37,29 @@ class EvaluationSmoke(unittest.TestCase):
                     writer = csv.DictWriter(handle, fieldnames=fields)
                     writer.writeheader()
                     writer.writerows(rows)
-            subprocess.run([sys.executable, "-m", "research.evaluate", "--manifest", str(root/"manifest.csv"),
-                            "--data-root", str(root), "--features", str(root/"features.csv"),
-                            "--model-id", "synthetic-scores-no-model", "--output", str(root/"results")], check=True)
+            feature_path = root / "features.csv"
+            manifest_path = root / "manifest.csv"
+            sidecar = {"manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
+                       "checkpoint_sha256": "abc123",
+                       "features_sha256": hashlib.sha256(feature_path.read_bytes()).hexdigest(),
+                       "samples": len(features)}
+            (root / "features.metadata.json").write_text(json.dumps(sidecar))
+            environment = os.environ.copy()
+            environment["THREATVISION_SOURCE_REVISION"] = "unknown"
+            subprocess.run([sys.executable, "-m", "research.evaluate", "--manifest", str(manifest_path),
+                            "--data-root", str(root), "--features", str(feature_path),
+                            "--model-id", "abc123", "--output", str(root/"results")], check=True, env=environment)
             report = json.loads((root/"results/metrics.json").read_text())
             self.assertEqual(set(report["metrics"]), {"static","neural","combined"})
             self.assertEqual(report["dataset_version"], "synthetic-smoke-only")
             self.assertTrue((root/"results/roc.svg").is_file())
+            self.assertEqual(report["revision"], "unknown")
+            self.assertEqual(len(report["source_snapshot_sha256"]), 64)
+            sidecar["checkpoint_sha256"] = "wrong"
+            (root / "features.metadata.json").write_text(json.dumps(sidecar))
+            failed = subprocess.run([sys.executable, "-m", "research.evaluate",
+                "--manifest", str(manifest_path), "--data-root", str(root),
+                "--features", str(feature_path), "--model-id", "abc123",
+                "--output", str(root/"bad-results")], capture_output=True, text=True)
+            self.assertNotEqual(failed.returncode, 0)
+            self.assertIn("provenance mismatch", failed.stderr)
