@@ -18,7 +18,7 @@ The export contains `ThreatVision/best_model.keras` (11,599,393 bytes), SHA-256 
 
 This differs from the later `ThreatVisionFInal.ipynb` construction order, which includes augmentation before rescaling and channel adaptation. The recovered notebook is useful historical evidence, but is not proven to be the exact source of this checkpoint.
 
-The archive is structurally readable. TensorFlow/Keras runtime loading and prediction have not been performed. The checkpoint is not copied into this repository.
+The archive is structurally readable. A temporary copy of its `best_model.keras` member was safely loaded and passed synthetic inference; the source ZIP and checkpoint are not copied into this repository. See the [runtime verification record](PRODUCTION_CHECKPOINT_VERIFICATION.md).
 
 ## Training logs
 
@@ -34,7 +34,7 @@ Eight notebooks are present. The two ThreatVision-named notebooks contain origin
 
 ## Safe next steps
 
-Use a compatible isolated environment to load the checkpoint with `compile=False, safe_mode=True`, record software versions and repeatability, and infer only on a harmless synthetic PE fixture. Do not execute PE files. Preserve the archive unchanged. Resolve checkpoint lineage against version history and earlier notebook revisions. Recover actual authorized data and split membership before interpreting training metrics. No detected result in these files constitutes an independently validated malware benchmark.
+The checkpoint was copied to a temporary path and loaded with `compile=False, safe_mode=True`; software versions, outputs, and repeatability are in the runtime verification record. Probes used harmless synthetic tensors only. No PE file was executed. The archive remains unchanged. Checkpoint lineage and data provenance still require recovery, and none of the recorded outputs is an independently validated malware benchmark.
 
 ## Later independent cross-check
 

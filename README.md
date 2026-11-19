@@ -8,11 +8,11 @@ I independently designed and implemented ThreatVision's technical architecture, 
 
 ThreatVision combines static PE analysis with a byte-bigram/DCT image path and a MobileNetV2 neural score. The transform follows prior work by Mohammed et al. (2021); the project contribution is the system implementation and integration. Static criteria determine the final malware/benign label. Neural inference can adjust the numeric threat score by at most five points.
 
-**Research question:** Does the byte-bigram/DCT neural representation provide incremental malware-classification information beyond simple file statistics and static PE features? The evidence below is a limited diagnostic pilot, not a malware-detection benchmark.
+**Research question:** Do frequency-domain neural representations add measurable predictive value beyond conventional PE static features when dataset bias, sample lineage, and generalization are properly controlled? The evidence below is a limited diagnostic pilot, not a malware-detection benchmark.
 
 ## Project Demonstration
 
-The [project landing page](https://threatvision.amaaholding.com/) currently serves the earlier website. The [original analyst dashboard](https://threatvision.amaaholding.com/dashboard) redirects signed-out visitors to sign-in. A separate read-only demonstration is prepared locally and awaits publication. Live inference is unavailable in the demonstration. The Render service responded to a liveness check during the audit, and end-to-end inference remains unverified.
+The public host currently resolves, but a live browser audit on 18 November 2026 found that the hosted site serves an older, materially inaccurate product presentation: it advertises unsupported 0.970 validation AUC, a 1.04M MaleX benchmark, SE-ResNet production inference, calibrated thresholds, Grad-CAM explanations, and simulated live threat telemetry. `/demo` returns to the homepage; scanner/dashboard/threat routes redirect to sign-in. Do not link the live site for academic review until its owner publishes and verifies corrected content. The local companion application's separate HTTP pipeline was exercised with a generated harmless PE fixture and the actual 224×224 production checkpoint; that establishes local engineering connectivity only, not public inference or detection performance.
 
 ![System overview showing upload validation branching into static PE analysis and byte-bigram/DCT neural inference, then recombining in a static-led decision and analyst report.](figures/system-overview.svg)
 
@@ -20,7 +20,7 @@ The [project landing page](https://threatvision.amaaholding.com/) currently serv
 
 ![Browser screenshot of the ThreatVision read-only analyst dashboard with an inference-unavailable notice and links to static PE evidence and the experimental record.](figures/analyst-dashboard.png)
 
-*Screenshot of the implemented read-only walkthrough running locally. The public site still serves the earlier frontend.*
+*Screenshot of the implemented read-only walkthrough running locally. It is not the currently served public website, whose unsupported claims are documented above.*
 
 ## How bytes become model input
 
@@ -44,19 +44,19 @@ Two original Google Drive exports were recovered and inspected read-only. They c
 
 A later `ThreatVisionFInal.ipynb` output records **39,999 benign plus 39,998 malware image-folder entries**, but only shows the **start** of a 256 × 256 training run. Its train/validation directory-loader calls use incompatible shuffling settings, creating a potential split-overlap risk. No complete, independently verified final training history can be claimed from it. Another recovered notebook concerns separate family-classification experiments; third-party reference notebooks are not counted as original project performance.
 
-**Model versions must stay distinct:** the recovered 256 × 256 checkpoint is **not the documented 224 × 224 production checkpoint** (`threatvision_v01.keras`), and its Conv2D-to-Rescaling layer order differs from the later notebook's implementation. The earlier model passed ZIP integrity checks but was not loaded in TensorFlow. The 224 × 224 checkpoint metadata is in this repo, but its original model bytes were not supplied in the recovery exports. Detailed source-by-source findings: [recovery reconciliation](docs/audits/RECOVERY_CROSSCHECK_2026-11-18.md) and [sanitized verification summary](docs/audits/recovered-artifact-verified-summary.json).
+**Model versions must stay distinct:** the recovered 256 × 256 checkpoint is **not** the 224 × 224 production checkpoint (`threatvision_v01.keras`). Both exact checkpoint hashes were verified and both artifacts completed safe synthetic forward passes in the existing Apple Silicon `threatvision` environment (Python 3.11.15, Keras 3.14.1, TensorFlow 2.16.1, NumPy 1.26.4). The production checkpoint also passed a local backend-chain smoke test with a generated harmless PE fixture. Repeated outputs were identical within that run; a prior TensorFlow 2.21.0 run produced different synthetic scores, so cross-runtime numeric equivalence is not established. These checks prove loading and inference only, not accuracy, calibration, or lineage. The recovered model remains separate from the later notebook's implementation. See the [production checkpoint verification record](docs/audits/PRODUCTION_CHECKPOINT_VERIFICATION.md), [recovery reconciliation](docs/audits/RECOVERY_CROSSCHECK_2026-11-18.md), and [sanitized verification summary](docs/audits/recovered-artifact-verified-summary.json).
 
 **Historical best-accuracy recollection (unverified):** The developer recalls approximately **85%** in a MobileNetV2 experiment, but **none of the supplied notebook outputs or logs establishes that number**, and the relevant split, checkpoint and data provenance are unknown. The highest saved `val_accuracy` in the 22-row CSV is **80.27%**; it has anomalous `val_auc=0.0` for all rows and is not independent test evidence. The 85% figure is **not a validated result** and is excluded from professor outreach performance claims. See the [85% claim audit](docs/audits/HISTORICAL_ACCURACY_CLAIM.md) and [reconstructed verification notebook](notebooks/RECONSTRUCTED_MobileNetV2_Validation.ipynb).
 
-The only **independently executed** checks in this research repo are safe engineering tests; no genuine, independently labeled malware benchmark is claimed.
+**Independently executed checks** include safe engineering tests, exact-checkpoint synthetic inference, and synthetic preprocessing parity against the companion application's converter. No genuine, independently labeled malware benchmark is claimed.
 
 ## What the evidence supports
 
 | Established in this record | Observed in the pilot | Still unproven |
 | --- | --- | --- |
 | Static criteria determine the final label; the neural score has a bounded numeric adjustment. | Score responses to overlays differed across two source files; three of eight overlay rows received a final malware label. | Malware-detection performance, calibrated probabilities, a general entropy shortcut, or an entropy-only causal effect. |
-| The deployed archive records a MobileNetV2-based architecture and saved compile configuration. | Two histogram-preserving byte shuffles retained size and recorded entropy while scores fell. | Training-data identity, independent label validity, and the checkpoint's full lineage. |
-| The public repository documents the implementation and a small post-submission study. | Synthetic random streams received high neural scores in this set. | Generalization to a lawful, independently labeled malware corpus. |
+| The deployed archive's hash, safe runtime loading, five synthetic forward passes, repeatability, and app inference path on a harmless fixture were checked. | Two histogram-preserving byte shuffles retained size and recorded entropy while scores fell. | Training-data identity, independent label validity, predictive performance, and the checkpoint's full lineage. |
+| This research repository documents the implementation and a small post-submission study. | Synthetic random streams received high neural scores in this set. | Generalization to a lawful, independently labeled malware corpus. |
 
 The pilot has no known-malicious PE cohort or independently verified labels. Twenty transformed observations derive from two files, so the 46 rows are not 46 independent experimental units. The sample-level CSV, original input files, and runnable experiment are not published; rights and provenance remain unresolved. See the [experimental record](docs/experimental-record.md) and [findings and limitations](docs/findings-and-limitations.md).
 
@@ -89,4 +89,4 @@ I independently implemented ThreatVision's technical system. The original FYP's 
 
 ## Reproducibility tooling
 
-See [setup and safe tests](REPRODUCIBILITY.md) and the [current readiness assessment](docs/audits/PROFESSOR_OUTREACH_READINESS.md). Research infrastructure passes fourteen safe tests, including three additional archive-metadata audit checks. No new detection results are reported. Recovered original notebooks, model metadata and training-log cautions are summarized in the [artifact inventory](docs/audits/recovered-artifact-inventory.md) and [source-by-source reconciliation](docs/audits/RECOVERY_CROSSCHECK_2026-11-18.md). Feature evaluation requires a matching extraction provenance sidecar.
+See [setup and safe tests](REPRODUCIBILITY.md) and the [final readiness assessment](docs/audits/FINAL_PROFESSOR_OUTREACH_READINESS.md). The full research suite passes 35 safe engineering tests in the existing `threatvision` environment. Backend Python tests pass 6/6 and backend Jest passes 10/10, including simulated-indicator exclusion, loopback-only local auth bypass, and the actual harmless-PE inference path. Frontend builds pass in public-demo and private-console modes. No new detection-performance result is reported. Recovered notebooks, model metadata and training-log cautions are summarized in the [artifact inventory](docs/audits/recovered-artifact-inventory.md) and [source-by-source reconciliation](docs/audits/RECOVERY_CROSSCHECK_2026-11-18.md). Feature evaluation requires a matching extraction provenance sidecar.

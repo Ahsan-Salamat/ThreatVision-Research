@@ -56,6 +56,8 @@
 !.github/workflows/research.yml
 
 !docs/audits/verified-environment.txt
+!docs/audits/production-checkpoint-verification.json
+!docs/audits/recovered-256-checkpoint-verification.json
 
 !requirements-model.txt
 
@@ -74,3 +76,9 @@
 !notebooks/RECONSTRUCTED_MobileNetV2_Validation.ipynb
 
 !LOCAL_RECONCILIATION_REPORT.md
+!LOCAL_IMPLEMENTATION_REPORT.md
+
+!research/verify_model.py
+!tests/test_verify_model.py
+!requirements-model-verify.txt
+!tests/test_application_preprocessing_parity.py

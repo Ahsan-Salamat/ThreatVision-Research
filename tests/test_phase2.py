@@ -1,10 +1,22 @@
 import unittest
 import tempfile
 from pathlib import Path
-from research.splits import assign
+from research.splits import assign, lineage_component_ids
 from research.extract import load_checkpoint
 
 class PhaseTwoTests(unittest.TestCase):
+    def test_bootstrap_groups_follow_transitive_lineage_and_family_links(self):
+        rows = [
+            dict(sample_id="a", lineage_id="lineage-1", malware_family="family-1"),
+            dict(sample_id="b", lineage_id="lineage-2", malware_family="family-1"),
+            dict(sample_id="c", lineage_id="lineage-2", malware_family="family-2"),
+            dict(sample_id="d", lineage_id="lineage-3", malware_family="family-3"),
+        ]
+        groups = lineage_component_ids(rows)
+        self.assertEqual(groups[0], groups[1])
+        self.assertEqual(groups[1], groups[2])
+        self.assertNotEqual(groups[2], groups[3])
+
     def test_checksum_rejected_before_loading(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory)/"invalid.keras"

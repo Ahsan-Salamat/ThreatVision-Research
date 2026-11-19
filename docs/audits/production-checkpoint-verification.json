@@ -1,0 +1,161 @@
+{
+  "status": "PASS",
+  "scope": "synthetic forward-pass verification only; no classification accuracy claim",
+  "checkpoint_path": "ThreatVision Final/backend/python_scripts/model/threatvision_v01.keras",
+  "checkpoint_sha256": "1e8f713db5aa0e42bb55addb02281a700028fc9fbca784b908c77a1b9cf6aaca",
+  "model": {
+    "name": "malware_classifier",
+    "input_shape": [
+      null,
+      224,
+      224,
+      1
+    ],
+    "sigmoid_output": true,
+    "output_layer": {
+      "class": "Dense",
+      "name": "output_sigmoid",
+      "activation": "sigmoid",
+      "units": 1
+    },
+    "layers": [
+      {
+        "class": "InputLayer",
+        "name": "input_grayscale"
+      },
+      {
+        "class": "RandomFlip",
+        "name": "aug_flip",
+        "mode": "horizontal"
+      },
+      {
+        "class": "RandomRotation",
+        "name": "aug_rotate",
+        "factor": [
+          -0.014,
+          0.014
+        ]
+      },
+      {
+        "class": "Conv2D",
+        "name": "grayscale_to_rgb",
+        "activation": "linear",
+        "filters": 3,
+        "kernel_size": [
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1
+        ],
+        "padding": "same"
+      },
+      {
+        "class": "Rescaling",
+        "name": "rescale_neg1_pos1",
+        "scale": 2.0,
+        "offset": -1.0
+      },
+      {
+        "class": "Functional",
+        "name": "mobilenetv2_1.00_224"
+      },
+      {
+        "class": "GlobalAveragePooling2D",
+        "name": "gap"
+      },
+      {
+        "class": "Dropout",
+        "name": "dropout_1"
+      },
+      {
+        "class": "Dense",
+        "name": "dense_128",
+        "activation": "relu",
+        "units": 128
+      },
+      {
+        "class": "Dropout",
+        "name": "dropout_2"
+      },
+      {
+        "class": "Dense",
+        "name": "output_sigmoid",
+        "activation": "sigmoid",
+        "units": 1
+      }
+    ],
+    "saved_keras_version": "3.14.1",
+    "saved_at": "2026-05-15@10:37:36"
+  },
+  "loaded_input_shape": [
+    null,
+    224,
+    224,
+    1
+  ],
+  "loaded_output_shape": [
+    null,
+    1
+  ],
+  "parameter_count": 2422084,
+  "input_profile": {
+    "id": "production-224-v1",
+    "minimum": 0.0,
+    "maximum": 1.0,
+    "contract": "float32 grayscale pixels divided by 255 by production inference"
+  },
+  "runtime": {
+    "python": "3.11.15",
+    "keras": "3.14.1",
+    "backend": "tensorflow",
+    "numpy": "1.26.4",
+    "system": "Darwin",
+    "machine": "arm64",
+    "tensorflow": "2.16.1",
+    "devices": [
+      "/physical_device:CPU:0",
+      "/physical_device:GPU:0"
+    ]
+  },
+  "repeatability_tolerance": 1e-07,
+  "all_cases_repeatable": true,
+  "cases": {
+    "zeros": {
+      "output": 0.44140625,
+      "repeat_max_abs_delta": 0.0,
+      "first_call_ms": 1309.729,
+      "finite": true,
+      "repeatable_within_tolerance": true
+    },
+    "constant_half": {
+      "output": 0.410888671875,
+      "repeat_max_abs_delta": 0.0,
+      "first_call_ms": 418.198,
+      "finite": true,
+      "repeatable_within_tolerance": true
+    },
+    "ones": {
+      "output": 0.6689453125,
+      "repeat_max_abs_delta": 0.0,
+      "first_call_ms": 615.827,
+      "finite": true,
+      "repeatable_within_tolerance": true
+    },
+    "gradient_0_to_1": {
+      "output": 0.8330078125,
+      "repeat_max_abs_delta": 0.0,
+      "first_call_ms": 448.334,
+      "finite": true,
+      "repeatable_within_tolerance": true
+    },
+    "random_0_to_1_seed42": {
+      "output": 0.8193359375,
+      "repeat_max_abs_delta": 0.0,
+      "first_call_ms": 405.888,
+      "finite": true,
+      "repeatable_within_tolerance": true
+    }
+  }
+}

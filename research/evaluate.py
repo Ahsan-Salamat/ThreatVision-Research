@@ -7,6 +7,7 @@ import json
 import platform
 import subprocess
 from pathlib import Path
+from .splits import lineage_component_ids
 
 def source_revision(source_root):
     explicit = os.environ.get("THREATVISION_SOURCE_REVISION")
@@ -106,8 +107,8 @@ def main():
     output.mkdir(parents=True, exist_ok=False)
     from .uncertainty import intervals
     test_rows = [row for row in rows if row["split"] == "test"]
-    # Family groups are conservatively combined; lineage is used when family is unknown.
-    groups = [row.get("malware_family") or row["lineage_id"] for row in test_rows]
+    # Resampling units use transitive lineage/family connectivity, matching split assignment.
+    groups = lineage_component_ids(test_rows)
     revision = source_revision(Path(__file__).parent)
     source_files = sorted(Path(__file__).parent.glob("*.py"))
     preprocessing_hash = hashlib.sha256((Path(__file__).parent/"preprocessing.py").read_bytes()).hexdigest()

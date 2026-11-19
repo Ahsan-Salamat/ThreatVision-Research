@@ -5,27 +5,65 @@ from datetime import date
 import random
 
 
+def lineage_components(rows):
+    """Return connected components across shared lineage and malware family keys."""
+    parent = list(range(len(rows)))
+    rank = [0] * len(rows)
+    owner = {}
+
+    def find(index):
+        while parent[index] != index:
+            parent[index] = parent[parent[index]]
+            index = parent[index]
+        return index
+
+    def union(left, right):
+        left, right = find(left), find(right)
+        if left == right:
+            return
+        if rank[left] < rank[right]:
+            left, right = right, left
+        parent[right] = left
+        if rank[left] == rank[right]:
+            rank[left] += 1
+
+    for index, row in enumerate(rows):
+        keys = [("lineage", row["lineage_id"])]
+        if row.get("malware_family"):
+            keys.append(("family", row["malware_family"]))
+        for key in keys:
+            if key in owner:
+                union(index, owner[key])
+            else:
+                owner[key] = index
+
+    components = {}
+    for index in range(len(rows)):
+        components.setdefault(find(index), []).append(index)
+    return sorted(components.values(), key=lambda component: min(
+        rows[index].get("sample_id", str(index)) for index in component
+    ))
+
+
+def lineage_component_ids(rows):
+    """Return one stable group ID per row for leakage checks and cluster resampling."""
+    result = [None] * len(rows)
+    for component in lineage_components(rows):
+        group_id = min(rows[index].get("sample_id", str(index)) for index in component)
+        for index in component:
+            result[index] = group_id
+    return result
+
+
 def assign(rows, strategy="group", seed=17, test_source=None, validation_source=None,
            validation_date=None, test_date=None):
     rows = [dict(row) for row in rows]
     hashes = [r["sha256"].lower() for r in rows]
     if len(set(hashes)) != len(hashes):
         raise ValueError("Deduplicate hashes and resolve conflicting labels first")
-    groups = []
-    for row in rows:
-        keys = {("lineage", row["lineage_id"])}
-        if row.get("malware_family"):
-            keys.add(("family", row["malware_family"]))
-        matches = [g for g in groups if g[0] & keys]
-        members = [row]
-        for group in matches:
-            keys |= group[0]
-            members += group[1]
-            groups.remove(group)
-        groups.append((keys, members))
-    groups.sort(key=lambda g: min(r["sample_id"] for r in g[1]))
+    groups = [[rows[index] for index in component] for component in lineage_components(rows)]
     random.Random(seed).shuffle(groups)
-    for i, (_, members) in enumerate(groups):
+    for i, members in enumerate(groups):
         if strategy == "group":
             partition = "test" if i < len(groups)*0.2 else "validation" if i < len(groups)*0.4 else "train"
         else:

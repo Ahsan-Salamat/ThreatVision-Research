@@ -17,15 +17,15 @@ The manifest requires sample_id, sha256, ground_truth_label, source, label_evide
 
 The original numerical preprocessing functions were extracted from the application. The original source checksum is in [checkpoint metadata](docs/audits/checkpoint-metadata.json). There is no padding or truncation in that implementation. Arbitrary bytes can be transformed without becoming valid PE research samples. Runtime parity with the source must be checked after any future changes to either implementation.
 
-An optional runtime checkpoint probe requires a compatible TensorFlow installation.
+The production checkpoint's runtime probe has been implemented and executed using the existing Apple Silicon `threatvision` environment (Python 3.11.15, TensorFlow 2.16.1, Keras 3.14.1). The separate recovered 256×256 checkpoint was also loaded and probed; see [`PRODUCTION_CHECKPOINT_VERIFICATION.md`](docs/audits/PRODUCTION_CHECKPOINT_VERIFICATION.md). Both checks use synthetic input and establish runtime behavior only. A prior TensorFlow 2.21.0 probe had different synthetic output values; repeated calls were deterministic within a run, but cross-runtime numerical equivalence is not established.
 
 ```sh
 python -m research.checkpoint /path/to/threatvision_v01.keras
 ```
 
-This uses synthetic bytes only and prints repeat-run outputs explicitly as engineering probes. TensorFlow is not in the lightweight test dependencies. Its compatible environment and original checkpoint runtime remain unverified in this pass.
+This uses synthetic bytes only and prints repeat-run outputs explicitly as engineering probes. The current production checkpoint runtime is verified as documented in the audit below; this lightweight checkpoint command itself is a separate earlier utility.
 
-Historical notebooks, an earlier 256×256 checkpoint, and a 22-row training log have been recovered; however, exact training-to-checkpoint linkage, original PE/PNG samples, split membership, and the 224×224 deployed checkpoint bytes are still missing from the reviewed recovery exports. No command can currently reproduce a verified historical checkpoint training run. Training, extraction, source/temporal holdouts and group uncertainty modules are implemented but have not been verified end to end with TensorFlow and an authorized cohort. An evaluation smoke test uses minimal synthetic headers and invented scores, deletes its temporary results, and checks runner integration only. Do not treat the runner as validated scientific evidence.
+Historical notebooks, an earlier 256×256 checkpoint, and a 22-row training log have been recovered; exact training-to-checkpoint linkage, original PE/PNG samples, and split membership remain unavailable. The companion app contains the actual 224×224 checkpoint, whose runtime is verified, but no command can reproduce its historical training. Training, extraction, source/temporal holdouts and group uncertainty modules still require an authorized real-data cohort for end-to-end scientific validation. The evaluation smoke test uses minimal synthetic headers and invented scores, deletes temporary outputs, and checks runner integration only. It is not scientific evidence.
 
 Use the existing [dataset provenance](docs/dataset-provenance.md), [model card](docs/model-card.md), [experimental record](docs/experimental-record.md), and [limitations](docs/findings-and-limitations.md) as the scientific record.
 
@@ -68,4 +68,12 @@ python -m research.recovery_audit \
 
 This inspects archive CRCs, Keras archive metadata (not runtime), notebook structure, image-manifest counts and log anomalies. The sanitized reference summary is in [`docs/audits/recovered-artifact-verified-summary.json`](docs/audits/recovered-artifact-verified-summary.json). See [the crosscheck](docs/audits/RECOVERY_CROSSCHECK_2026-11-18.md) for the essential warning that a recovered 256×256 model is **not** the previously described 224×224 production model.
 
-As of the 18 November 2026 follow-up, **21 safe unit tests passed** (14 earlier tests plus seven synthetic historical-accuracy-audit tests). No TensorFlow inference or genuine malware-benchmark run was performed as part of this reconciliation.
+As of 18 November 2026, the complete research suite reports **35 passed** in the existing `/opt/miniconda3/envs/threatvision` environment. The full suite in Conda base reports 29 pass and one environment error because Matplotlib is missing there. The production checkpoint has been safely loaded and run on synthetic inputs; no genuine malware-benchmark result was performed.
+
+## Synthetic checkpoint verification
+
+The shape-aware verifier accepts only archives with a supported grayscale input at 224×224 or 256×256 and an actual one-unit Dense sigmoid output layer. It hashes the exact checkpoint, safely loads actual weights, infers dimensions from the archive, and probes zero, constant, gradient and seeded-noise tensors using the explicitly selected profile. `production-224-v1` uses `[0,1]`, matching the production caller's float32 grayscale pixels divided by 255; `recovered-256-v1` uses `[0,255]` to reproduce the separate recovered-model probe contract. It reports timing, software versions, outputs and repeatability as JSON. Synthetic probes establish load/forward-pass behavior only. Tests reject a misleading archive with an intermediate sigmoid and a linear output.
+
+python -m research.verify_model "/path/to/ThreatVision Final/backend/python_scripts/model/threatvision_v01.keras" --sha256 1e8f713db5aa0e42bb55addb02281a700028fc9fbca784b908c77a1b9cf6aaca --profile production-224-v1 --output docs/audits/production-checkpoint-verification.json
+
+The production command has passed in two existing environments. The latest JSON evidence records `/opt/miniconda3/envs/threatvision/bin/python` (Python 3.11.15, Keras 3.14.1, TensorFlow 2.16.1, NumPy 1.26.4). An earlier successful run used `/opt/miniconda3/bin/python` (Python 3.13.9, Keras 3.14.1, TensorFlow 2.21.0, NumPy 2.4.4); `requirements-model-verify.txt` records that alternate verifier environment. The `threatvision` environment also ran the complete research suite, including the Matplotlib-dependent evaluation smoke test. Scores should not be expected to match across these TensorFlow builds.

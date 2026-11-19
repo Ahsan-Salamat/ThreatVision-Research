@@ -6,13 +6,13 @@ The university record lists the Final Year Project as a group submission by Ahsa
 
 ## Model details
 
-- **Artifact:** `threatvision_v01.keras` (not included in this repository)
+- **Artifact:** `threatvision_v01.keras` (excluded from this repository; companion application artifact SHA-256 `1e8f713db5aa0e42bb55addb02281a700028fc9fbca784b908c77a1b9cf6aaca`; safe runtime load and synthetic forward pass verified)
 - **Architecture:** grayscale input adapter, MobileNetV2 backbone (ImageNet initialization reported but not independently verified), global average pooling, dropout, and dense binary head
 - **Input tensor:** 224 × 224 × 1 spectrogram, normalized to `[0,1]`
 - **Output:** scalar sigmoid score interpreted by the application as a malware score
 - **Technical developer:** Ahsan Ali Salamat, The University of Faisalabad
 - **Archive metadata:** Keras 3.14.1; saved 2026-05-15
-- **Parameter count:** 2,422,084 total, 1,512,580 trainable, and 909,504 non-trainable, recomputed from serialized layer shapes and trainability flags
+- **Parameter count:** 2,422,084 total
 - **Saved compile configuration:** Adam at approximately `5 × 10⁻⁶`, binary cross-entropy, and accuracy, ROC AUC, precision, and recall metrics
 - **Artifact lineage:** a debug script references `phase2_best.keras`, but the file and an export record are unavailable
 
@@ -34,7 +34,7 @@ No independently documented held-out metrics are available. This repository repo
 
 ## Historical model and notebook evidence (not deployed-model validation)
 
-An earlier `best_model.keras` export is structurally readable (Keras 3.13.2, 256×256×1 input, SHA-256 prefix `62feb539`); it differs from the documented 224×224 production checkpoint and the later training script. A recovered older notebook prints test-accuracy figures of **67.00%** for a scratch CNN and **61.50%** for a separate MobileNetV2 workflow on a 4,000-image subset. These are historical, not independently reproducible performance estimates and are **not results for the deployed model**. The developer recalls a separate **~85% MobileNetV2 accuracy** result, but its original metric type and supporting run are missing; **do not attribute it to either checkpoint or cite it as validation**. [Claim-evidence register](audits/HISTORICAL_ACCURACY_CLAIM.md). The recovered 22-row training log reports `val_auc=0.0` and `val_precision=1.0` throughout; these anomalous validation metrics are unusable for detection-performance claims without recovered labels/splits. [Evidence reconciliation](audits/RECOVERY_CROSSCHECK_2026-11-18.md).
+An earlier `best_model.keras` export is runtime-verified for safe load and synthetic forward pass (Keras 3.13.2 metadata, 256×256×1 input, SHA-256 prefix `62feb539`); it differs from the documented 224×224 production checkpoint and the later training script. A recovered older notebook prints test-accuracy figures of **67.00%** for a scratch CNN and **61.50%** for a separate MobileNetV2 workflow on a 4,000-image subset. These are historical, not independently reproducible performance estimates and are **not results for the deployed model**. The developer recalls a separate **~85% MobileNetV2 accuracy** result, but its original metric type and supporting run are missing; **do not attribute it to either checkpoint or cite it as validation**. [Claim-evidence register](audits/HISTORICAL_ACCURACY_CLAIM.md). The recovered 22-row training log reports `val_auc=0.0` and `val_precision=1.0` throughout; these anomalous validation metrics are unusable for detection-performance claims without recovered labels/splits. [Evidence reconciliation](audits/RECOVERY_CROSSCHECK_2026-11-18.md).
 
 ## Ethical and technical considerations
 

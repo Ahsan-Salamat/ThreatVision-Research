@@ -1,0 +1,148 @@
+{
+  "status": "PASS",
+  "scope": "synthetic forward-pass verification only; no classification accuracy claim",
+  "checkpoint_path": "recovered best_model.keras (temporary verified copy)",
+  "checkpoint_sha256": "62feb539c30edb4b2849ac760d9b9e41c8842da000e9bfc9c653b08861173102",
+  "model": {
+    "name": "ThreatVision_MobileNetV2",
+    "input_shape": [
+      null,
+      256,
+      256,
+      1
+    ],
+    "sigmoid_output": true,
+    "output_layer": {
+      "class": "Dense",
+      "name": "binary_output",
+      "activation": "sigmoid",
+      "units": 1
+    },
+    "layers": [
+      {
+        "class": "InputLayer",
+        "name": "grayscale_input"
+      },
+      {
+        "class": "Conv2D",
+        "name": "grayscale_to_rgb",
+        "activation": "linear",
+        "filters": 3,
+        "kernel_size": [
+          1,
+          1
+        ],
+        "strides": [
+          1,
+          1
+        ],
+        "padding": "same"
+      },
+      {
+        "class": "Rescaling",
+        "name": "preprocess",
+        "scale": 0.00784313725490196,
+        "offset": -1.0
+      },
+      {
+        "class": "Functional",
+        "name": "mobilenetv2_1.00_224"
+      },
+      {
+        "class": "GlobalAveragePooling2D",
+        "name": "gap"
+      },
+      {
+        "class": "Dropout",
+        "name": "dropout_1"
+      },
+      {
+        "class": "Dense",
+        "name": "fc_128",
+        "activation": "relu",
+        "units": 128
+      },
+      {
+        "class": "Dropout",
+        "name": "dropout_2"
+      },
+      {
+        "class": "Dense",
+        "name": "binary_output",
+        "activation": "sigmoid",
+        "units": 1
+      }
+    ],
+    "saved_keras_version": "3.13.2",
+    "saved_at": "2026-05-11@11:23:04"
+  },
+  "loaded_input_shape": [
+    null,
+    256,
+    256,
+    1
+  ],
+  "loaded_output_shape": [
+    null,
+    1
+  ],
+  "parameter_count": 2422084,
+  "input_profile": {
+    "id": "recovered-256-v1",
+    "minimum": 0.0,
+    "maximum": 255.0,
+    "contract": "float32 grayscale pixel values in [0,255], matching the separate recovered-checkpoint probe"
+  },
+  "runtime": {
+    "python": "3.11.15",
+    "keras": "3.14.1",
+    "backend": "tensorflow",
+    "numpy": "1.26.4",
+    "system": "Darwin",
+    "machine": "arm64",
+    "tensorflow": "2.16.1",
+    "devices": [
+      "/physical_device:CPU:0",
+      "/physical_device:GPU:0"
+    ]
+  },
+  "repeatability_tolerance": 1e-07,
+  "all_cases_repeatable": true,
+  "cases": {
+    "zeros": {
+      "output": 0.30231162905693054,
+      "repeat_max_abs_delta": 0.0,
+      "first_call_ms": 842.871,
+      "finite": true,
+      "repeatable_within_tolerance": true
+    },
+    "constant_127": {
+      "output": 0.4804663360118866,
+      "repeat_max_abs_delta": 0.0,
+      "first_call_ms": 228.451,
+      "finite": true,
+      "repeatable_within_tolerance": true
+    },
+    "constant_255": {
+      "output": 0.22507219016551971,
+      "repeat_max_abs_delta": 0.0,
+      "first_call_ms": 116.091,
+      "finite": true,
+      "repeatable_within_tolerance": true
+    },
+    "gradient_0_to_255": {
+      "output": 0.49542656540870667,
+      "repeat_max_abs_delta": 0.0,
+      "first_call_ms": 109.203,
+      "finite": true,
+      "repeatable_within_tolerance": true
+    },
+    "random_0_to_255_seed42": {
+      "output": 0.7963354587554932,
+      "repeat_max_abs_delta": 0.0,
+      "first_call_ms": 108.137,
+      "finite": true,
+      "repeatable_within_tolerance": true
+    }
+  }
+}
