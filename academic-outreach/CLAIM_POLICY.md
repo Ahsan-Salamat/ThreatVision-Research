@@ -5,7 +5,7 @@
 - "I independently developed the technical implementation of a university-group-submitted Software Engineering FYP."
 - "ThreatVision integrates static PE triage, byte-bigram/DCT visual features, a MobileNetV2-derived advisory score, and an analyst-facing web interface."
 - "The representation comes from prior published research, not a novel transform I invented."
-- "I recovered eight old notebooks and an intact earlier Keras model archive; its exact training lineage and runtime predictions remain to be verified."
+- "I recovered eight old notebooks and a separate 256×256 Keras model archive. That archive and the distinct 224×224 production checkpoint safely loaded and passed synthetic runtime probes; neither has a verified training lineage or measured classification performance."
 - "The research repository implements safe preprocessing/evaluation tests and documents a proposed controlled study of incremental predictive value."
 - "My historical notebooks have saved test-output printouts, but they have not been independently reproduced or tied to the deployed checkpoint."
 

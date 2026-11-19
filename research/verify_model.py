@@ -25,6 +25,10 @@ INPUT_PROFILES = {
         "cases": ("zeros", "constant_127", "constant_255", "gradient_0_to_255", "random_0_to_255_seed42"),
     },
 }
+CHECKPOINT_IDENTITIES = {
+    "production-224-v1": "1e8f713db5aa0e42bb55addb02281a700028fc9fbca784b908c77a1b9cf6aaca",
+    "recovered-256-v1": "62feb539c30edb4b2849ac760d9b9e41c8842da000e9bfc9c653b08861173102",
+}
 SUPPORTED_LAYER_CLASSES = {
     "InputLayer", "RandomFlip", "RandomRotation", "Conv2D", "Rescaling",
     "Functional", "GlobalAveragePooling2D", "Dropout", "Dense",
@@ -102,6 +106,8 @@ def verify_checkpoint(path, expected_sha256, atol=1e-7, display_path=None, profi
         raise ValueError("Checkpoint SHA-256 does not match the expected value")
     config = inspect_configuration(path)
     profile_id, profile = select_input_profile(config["input_shape"], profile_id)
+    if expected_sha256.lower() != CHECKPOINT_IDENTITIES[profile_id]:
+        raise ValueError(f"Checkpoint SHA-256 does not match the registered {profile_id} identity")
     import numpy as np
     import keras
 
@@ -133,7 +139,21 @@ def verify_checkpoint(path, expected_sha256, atol=1e-7, display_path=None, profi
             "gradient_0_to_255": ramp,
             "random_0_to_255_seed42": (rng.random((1, height, width, channels)) * 255).astype(np.float32),
         }
+    from .fixtures import harmless_pe
+    from .preprocessing import tensor as production_tensor
+    pe_bytes = harmless_pe()
+    pe_tensor = production_tensor(pe_bytes)
+    if profile_id == "production-224-v1":
+        cases["harmless_pe_derived"] = pe_tensor
+    else:
+        # This is an engineering probe of the separate 256 input, not a claim
+        # that the current 224 preprocessing reconstructs historical training.
+        import cv2
+        image = np.rint(pe_tensor[0, :, :, 0] * 255).astype(np.uint8)
+        resized = cv2.resize(image, (width, height), interpolation=cv2.INTER_AREA)
+        cases["harmless_pe_derived_current_pipeline_resized"] = resized.astype(np.float32)[None, :, :, None]
     results = {}
+    pe_case_name = next((name for name in cases if name.startswith("harmless_pe_derived")), None)
     for name, tensor in cases.items():
         if tensor.shape != (1, height, width, channels) or tensor.dtype != np.float32:
             raise ValueError("Synthetic input violates the inferred model input contract")
@@ -179,6 +199,18 @@ def verify_checkpoint(path, expected_sha256, atol=1e-7, display_path=None, profi
         "runtime": runtime,
         "repeatability_tolerance": atol,
         "all_cases_repeatable": repeatable,
+        "harmless_pe_probe": {
+            "case": pe_case_name,
+            "fixture_sha256": hashlib.sha256(pe_bytes).hexdigest(),
+            "input_tensor_sha256": hashlib.sha256(cases[pe_case_name].tobytes()).hexdigest(),
+            "input_tensor_shape": list(cases[pe_case_name].shape),
+            "input_tensor_dtype": str(cases[pe_case_name].dtype),
+            "lineage_note": (
+                "Generated harmless PE bytes transformed by current 224x224 production preprocessing."
+                if profile_id == "production-224-v1" else
+                "Generated harmless PE bytes transformed by current 224x224 production preprocessing, then resized and rescaled for an engineering-only 256x256 probe; this does not reconstruct historical training preprocessing."
+            ),
+        },
         "cases": results,
     }
 
@@ -188,8 +220,8 @@ def main():
     parser.add_argument("checkpoint", type=Path)
     parser.add_argument("--sha256", required=True)
     parser.add_argument("--display-path", help="safe path label recorded in JSON evidence")
-    parser.add_argument("--profile", choices=tuple(INPUT_PROFILES),
-                        help="explicit model/input profile; inferred from input shape when omitted")
+    parser.add_argument("--profile", choices=tuple(INPUT_PROFILES), required=True,
+                        help="explicit checkpoint/input profile; must match the archived model shape")
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     report = verify_checkpoint(args.checkpoint, args.sha256, display_path=args.display_path,

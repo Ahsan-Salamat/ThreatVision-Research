@@ -1,4 +1,4 @@
-# Research Prospectus
+# ThreatVision Research Prospectus
 
 **Technical author:** Ahsan Ali Salamat, The University of Faisalabad
 
@@ -28,7 +28,7 @@ Two original Colab/Drive exports have been checked without executing notebooks o
 
 ### Current status
 
-The 224×224 production checkpoint passed safe Keras loading and five synthetic probes in Python 3.11.15, Keras 3.14.1 and TensorFlow 2.16.1; repeated outputs matched within that run. A prior TensorFlow 2.21 run produced different synthetic outputs, so cross-runtime numerical equivalence is not established. A harmless-PE smoke test exercised static analysis through inference and fusion. The archive records an optimizer and metrics, but exact training data, split records, epoch history and the checkpoint's lineage remain unestablished. No validated detection performance, calibrated threshold or generalization is claimed. The hosted site still displays unsupported model and performance claims; the public repository is older than the reviewed local checkout. Do not use either public link until the owner publishes and verifies the reviewed materials. Sample-level pilot measurements remain outside the public tree pending confirmation of redistribution terms.
+The production 224×224 checkpoint passed registered-SHA safe loading and six repeatable synthetic probes in Python 3.11.15, Keras 3.14.1 and TensorFlow 2.16.1. Its application and research preprocessing stages and neural outputs matched exactly on three harmless fixtures. A local harmless-PE HTTP flow reached static analysis, DCT conversion, inference and fusion. These checks do not establish historical training parity, model lineage, labels, splits, accuracy or calibration. A prior TensorFlow 2.21 run produced different synthetic outputs, so cross-runtime numerical equivalence is not established. The recovered 256×256 checkpoint remains separate. The hosted site still displays unsupported model and performance claims; the public repository is older than the reviewed local checkout. Do not use either public link until the owner publishes and verifies the reviewed materials. Sample-level pilot measurements remain outside the public tree pending confirmation of redistribution terms.
 
 ### References
 

@@ -9,7 +9,7 @@ The university record lists the Final Year Project as a group submission by Ahsa
 - **Artifact:** `threatvision_v01.keras` (excluded from this repository; companion application artifact SHA-256 `1e8f713db5aa0e42bb55addb02281a700028fc9fbca784b908c77a1b9cf6aaca`; safe runtime load and synthetic forward pass verified)
 - **Architecture:** grayscale input adapter, MobileNetV2 backbone (ImageNet initialization reported but not independently verified), global average pooling, dropout, and dense binary head
 - **Input tensor:** 224 × 224 × 1 spectrogram, normalized to `[0,1]`
-- **Output:** scalar sigmoid score interpreted by the application as a malware score
+- **Output:** scalar sigmoid score exposed by the application as an uncalibrated neural score; no probability calibration is established
 - **Technical developer:** Ahsan Ali Salamat, The University of Faisalabad
 - **Archive metadata:** Keras 3.14.1; saved 2026-05-15
 - **Parameter count:** 2,422,084 total

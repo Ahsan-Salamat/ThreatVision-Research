@@ -8,6 +8,14 @@ import math
 from pathlib import Path
 
 
+def _preprocess_tf_bytes(value):
+    """Convert the scalar value passed by ``tf.numpy_function`` to model input."""
+    if hasattr(value, "numpy"):
+        value = value.numpy()
+    from .preprocessing import tensor
+    return tensor(bytes(value))
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--manifest", required=True)
@@ -27,7 +35,6 @@ def main():
     rows = validate(args.manifest, args.data_root)
     import numpy as np
     import tensorflow as tf
-    from .preprocessing import tensor
     if args.cpu:
         tf.config.set_visible_devices([], "GPU")
     tf.keras.utils.set_random_seed(args.seed)
@@ -50,7 +57,7 @@ def main():
         dataset = tf.data.Dataset.from_tensor_slices((paths, labels))
         def transform(path, label):
             raw = tf.io.read_file(path)
-            image = tf.numpy_function(lambda value: tensor(value.numpy()), [raw], tf.float32)
+            image = tf.numpy_function(_preprocess_tf_bytes, [raw], tf.float32)
             image.set_shape((1, 224, 224, 1))
             return tf.squeeze(image, axis=0), label
         dataset = dataset.map(transform, num_parallel_calls=1, deterministic=True)

@@ -89,6 +89,15 @@ class VerifyModelTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "SHA-256"):
                 verify_checkpoint(path, "0" * 64)
 
+    def test_checkpoint_profile_rejects_unregistered_identity_before_model_load(self):
+        import hashlib
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "224.keras"
+            make_archive(path, (224, 224, 1))
+            actual = hashlib.sha256(path.read_bytes()).hexdigest()
+            with self.assertRaisesRegex(ValueError, "registered production-224-v1 identity"):
+                verify_checkpoint(path, actual, profile_id="production-224-v1")
+
     def test_profiles_keep_224_and_256_value_contracts_distinct(self):
         p224, c224 = select_input_profile((None, 224, 224, 1))
         p256, c256 = select_input_profile((None, 256, 256, 1))

@@ -1,7 +1,7 @@
 {
   "status": "PASS",
   "scope": "synthetic forward-pass verification only; no classification accuracy claim",
-  "checkpoint_path": "recovered best_model.keras (temporary verified copy)",
+  "checkpoint_path": "separate recovered 256 checkpoint (temporary copy)",
   "checkpoint_sha256": "62feb539c30edb4b2849ac760d9b9e41c8842da000e9bfc9c653b08861173102",
   "model": {
     "name": "ThreatVision_MobileNetV2",
@@ -108,39 +108,59 @@
   },
   "repeatability_tolerance": 1e-07,
   "all_cases_repeatable": true,
+  "harmless_pe_probe": {
+    "case": "harmless_pe_derived_current_pipeline_resized",
+    "fixture_sha256": "f250fba90998f6f49bf11fe479eb058f5f1c210825912ec2785f6dd10e0123a1",
+    "input_tensor_sha256": "3649cd7a3cbc743b591ef478aca895859347c4107b148a87b520352033b13eb4",
+    "input_tensor_shape": [
+      1,
+      256,
+      256,
+      1
+    ],
+    "input_tensor_dtype": "float32",
+    "lineage_note": "Generated harmless PE bytes transformed by current 224x224 production preprocessing, then resized and rescaled for an engineering-only 256x256 probe; this does not reconstruct historical training preprocessing."
+  },
   "cases": {
     "zeros": {
       "output": 0.30231162905693054,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 842.871,
+      "first_call_ms": 677.222,
       "finite": true,
       "repeatable_within_tolerance": true
     },
     "constant_127": {
       "output": 0.4804663360118866,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 228.451,
+      "first_call_ms": 89.497,
       "finite": true,
       "repeatable_within_tolerance": true
     },
     "constant_255": {
       "output": 0.22507219016551971,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 116.091,
+      "first_call_ms": 72.456,
       "finite": true,
       "repeatable_within_tolerance": true
     },
     "gradient_0_to_255": {
       "output": 0.49542656540870667,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 109.203,
+      "first_call_ms": 114.278,
       "finite": true,
       "repeatable_within_tolerance": true
     },
     "random_0_to_255_seed42": {
       "output": 0.7963354587554932,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 108.137,
+      "first_call_ms": 127.51,
+      "finite": true,
+      "repeatable_within_tolerance": true
+    },
+    "harmless_pe_derived_current_pipeline_resized": {
+      "output": 0.2264672964811325,
+      "repeat_max_abs_delta": 0.0,
+      "first_call_ms": 90.473,
       "finite": true,
       "repeatable_within_tolerance": true
     }

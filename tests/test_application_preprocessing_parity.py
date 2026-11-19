@@ -5,6 +5,7 @@ from pathlib import Path
 
 from research.fixtures import harmless_pe
 from research.preprocessing import tensor
+from research.preprocessing_parity import compare
 
 
 APP_ROOT = Path(__file__).resolve().parents[2] / "ThreatVision Final"
@@ -47,6 +48,18 @@ class ProductionPreprocessingParityTests(unittest.TestCase):
                 self.assertEqual(research_input.shape, (1, 224, 224, 1))
                 self.assertEqual(str(research_input.dtype), "float32")
                 self.assertTrue((app_input == research_input).all())
+
+    def test_every_preprocessing_stage_has_identical_hashes_and_zero_delta(self):
+        if not CONVERTER_PATH.is_file():
+            self.skipTest("companion application source is not available")
+        report = compare(CONVERTER_PATH)
+        self.assertEqual(report["status"], "PASS")
+        for fixture in report["fixtures"].values():
+            self.assertEqual(len(fixture["comparisons"]), 8)
+            for stage in fixture["comparisons"].values():
+                self.assertTrue(stage["exact_match"])
+                self.assertEqual(stage["max_abs_delta"], 0.0)
+                self.assertEqual(stage["application_sha256"], stage["research_sha256"])
 
 
 if __name__ == "__main__":

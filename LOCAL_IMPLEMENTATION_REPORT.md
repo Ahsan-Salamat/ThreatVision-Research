@@ -1,95 +1,102 @@
-# ThreatVision local implementation and verification report
+# ThreatVision local implementation report
 
-**Date:** 18 November 2026  
-**Workspace:** `/Users/ahsansalamat/Desktop/ThreatVision`  
-**Research repository:** `ThreatVision-Research`  
-**Application:** `ThreatVision Final`  
-**Scope:** local implementation and verification only. No files were staged or committed, no remote changes were made, and no deployment was performed.
+**Date:** 19 November 2026
 
-## Summary
+## Executive result
 
-The production checkpoint supplied at `ThreatVision Final/backend/python_scripts/model/threatvision_v01.keras` is now verified for safe Keras loading and synthetic forward-pass behavior. A separate recovered 256×256 checkpoint was also runtime-verified under a distinct preprocessing profile. Application preprocessing matches the research implementation on three deterministic fixtures, and the actual local app pipeline completed against a generated harmless PE fixture. These results establish engineering behavior, not malware-detection accuracy.
+Local engineering verification is **PASS for the exercised paths**. Exploratory professor outreach is **PARTIAL** until corrected local research files are manually published and links checked. Publishable malware-classification validation is **BLOCKED** because no independently labeled, lineage-audited PE benchmark is available. The hosted website should not be linked to professors; the last successful rendered audit found unsupported claims.
 
-The companion app's local user-facing copy was corrected where it claimed an SE-ResNet production model, MaleX training/benchmark performance, calibrated thresholds/probabilities, or Grad-CAM evidence. Mock result cards and animations are labeled illustrative. A new live-browser check found that the public site resolves but still serves the older unsupported claims; local and deployed frontends differ. The backend's local `.env` now selects the existing compatible `threatvision` Python environment instead of Homebrew `python3`, which lacked NumPy/TensorFlow. The local changes are ready for manual review; professor outreach is **PARTIAL** pending owner publication and remote verification.
+No commit, push, deployment, reset, or remote modification was performed. All changes remain local and unstaged.
 
-## Starting state
+## Checkout state and preservation
 
-- Research repository started on branch `main` at `f805b8f26cc37c02d45411af27912814cd212136`.
-- It already contained uncommitted checkpoint-verifier and research-doc changes from the preceding local reconciliation work. They were preserved and completed; no pre-existing changes were reverted.
-- Neither `/Users/ahsansalamat/Desktop/ThreatVision` nor `ThreatVision Final/` is itself a Git checkout. The application contains separate nested repositories: `frontend/` on `main` at `28f4294f04089207ae0739f8a661a449339474fa` and `backend/` on `main` at `9516cc659bb3c9c7c159ac5a96139405f0edc745`. At this handoff, both have unstaged local changes. The backend's ignored `.env` selects the existing `threatvision` interpreter and opts into the explicit development-only unauthenticated mode; no credentials were displayed or edited. The backend now fails closed when auth is unconfigured except under that local opt-in, and production ignores the bypass.
-- The supplied production model bytes were not modified. The recovered historical checkpoint was extracted as a copy into `/tmp` for verification; the source ZIP was left intact.
+| Checkout | Branch and HEAD at start | Initial state |
+| --- | --- | --- |
+| `ThreatVision-Research` | `main`, `fc0cb95394cde8231fe4e6c8c2045e68b1adb584` | Clean |
+| `ThreatVision Final/backend` | `main`, `9516cc659bb3c9c7c159ac5a96139405f0edc745` | Dirty before this work: application edits, logs, coverage, and tests |
+| `ThreatVision Final/frontend` | `main`, `28f4294f04089207ae0739f8a661a449339474fa` | Dirty before this work: broad UI, routing, configuration, dependency and lint changes |
 
-The backend worktree also contains modified tracked coverage output and logger audit files, deleted tracked 2026-10-31 log files, new 2026-11-06/2026-11-18 logs, Python cache output, and `.DS_Store` changes. Jest and application logging can regenerate or rotate these files. They were left in place and unstaged because the exact pre-run state of these generated and untracked artifacts could not be established safely. Review them separately before publication.
+The pre-existing backend and frontend edits were preserved. Research HEADs were not changed. There are no staged changes.
 
-## Checkpoints and runtime evidence
+## Implemented changes
 
-| Checkpoint | SHA-256 | Shape | Result |
-| --- | --- | --- | --- |
-| Production `threatvision_v01.keras` | `1e8f713db5aa0e42bb55addb02281a700028fc9fbca784b908c77a1b9cf6aaca` | `(None,224,224,1)` → `(None,1)` | **PASS** safe load and five synthetic probes, finite bounded output and zero repeat deltas |
-| Recovered `best_model.keras` | `62feb539c30edb4b2849ac760d9b9e41c8842da000e9bfc9c653b08861173102` | `(None,256,256,1)` → `(None,1)` | **PASS** safe load and five synthetic probes under separate `[0,255]` profile |
+### Research verification
 
-The latest production run used the existing Python 3.11.15, Keras 3.14.1, TensorFlow 2.16.1, NumPy 1.26.4 Apple Silicon `threatvision` environment. Its output scores were 0.44140625 (zeros), 0.410888671875 (constant 0.5), 0.6689453125 (ones), 0.8330078125 (gradient), and 0.8193359375 (seeded random). All repeat deltas were 0 at tolerance `1e-7`. A prior successful Python 3.13.9 / TensorFlow 2.21.0 run gave different synthetic scores, so repeatability is established within each run but cross-runtime numeric equivalence is not. These are synthetic probes, not test samples or performance metrics. The exact latest runtime record is [`production-checkpoint-verification.json`](docs/audits/production-checkpoint-verification.json); the complete method is [`PRODUCTION_CHECKPOINT_VERIFICATION.md`](docs/audits/PRODUCTION_CHECKPOINT_VERIFICATION.md).
+- Consolidated `research/checkpoint.py` on the shape-aware verifier so both entry points share the same checksum, safe-loading, profile, and probe rules.
+- Registered the production 224×224 and recovered 256×256 checkpoint SHA-256 identities. The CLI requires an explicit profile and rejects a hash that does not match that identity before deserializing weights.
+- Added a generated harmless PE-derived probe for each checkpoint profile. The 256×256 case is explicitly documented as an engineering resize, not a historical training reconstruction.
+- Added `research/preprocessing_parity.py`, which writes machine-readable per-stage hashes, shapes, dtypes, and numerical deltas for the current app and research implementations. It can also compare outputs from the real production checkpoint.
+- Added regression coverage for unregistered model identities and exact parity across eight preprocessing stages.
+- Fixed a training-smoke defect where `tf.numpy_function` supplied raw bytes but the callback attempted `.numpy()`. Added a regression test for the bytes-to-tensor adapter.
 
-The final completion audit tightened the verifier to identify the named model output in the serialized Keras graph and require that output itself to be a one-unit Dense sigmoid; an unrelated intermediate sigmoid no longer satisfies the contract. It also unified sample-lineage/family connected-component logic between split assignment and uncertainty resampling, so transitive relations remain one bootstrap unit. Regression tests cover both safeguards.
+### Backend guard and regression tests
 
-The production graph is a 2,422,084-parameter Functional model with RandomFlip, RandomRotation, learned grayscale-to-RGB Conv2D, internal rescaling, MobileNetV2, global average pooling, dropout, Dense(128), dropout, and one sigmoid output. The sigmoid is an **uncalibrated score**, not a validated probability. Production pixels are float32 `[0,1]`; the recovered 256 checkpoint's probe profile is float32 `[0,255]`. The two are not interchangeable. The user-supplied `verify_recovered_model.py` was also run unchanged against the recovered 256×256 checkpoint copy under the available TensorFlow backend and passed its five hard-coded 256×256 probes. It was not run on the production 224×224 model because its tensors are fixed at 256×256; the shape-aware verifier handled the user-specified production path.
+- Pinned `classify_image.py` to the production model SHA-256 before Keras loading. A replacement checkpoint requires an explicit matching `MODEL_SHA256` setting.
+- Added `.env.example` documentation and tests for checksum mismatch. The mismatch path does not deserialize the model and does not expose a neural score; the API marks the result simulated.
+- Previously present local backend safeguards and loopback-only development auth behavior were retained.
 
-## Preprocessing and app integration
+### Research and outreach materials
 
-Three deterministic synthetic fixtures passed through the app's real converter and the research converter. Normalized tensors matched exactly (`max_abs_delta=0`); expected output-image hashes are in the preprocessing test. Production preprocessing counts overlapping byte pairs, suppresses `(0,0)`, max-normalizes, quantizes to grayscale, applies orthonormal DCT-II and log-magnitude compression, rescales and resizes to 224×224. App model input then uses grayscale resize, float32 conversion and `/255`. The model's own `Rescaling(scale=2, offset=-1)` occurs after its learned Conv2D adapter; no external second normalization is applied.
+- Updated the README, reproducibility guide, model card, architecture record, claim policy, evidence index, project summary, and prospectus to reflect the new evidence without changing scientific claims.
+- Updated both checkpoint verification JSON records and added the stage-by-stage production parity record.
+- Updated the final outreach assessment and this implementation report.
+- Refreshed the one-page summary and research prospectus DOCX/PDF versions. The summary remains one page; the prospectus remains two pages. Every rendered page was reviewed after the final edits.
 
-A local HTTP/Jest integration test submitted a generated harmless PE fixture. The actual app completed static analysis, DCT conversion, Stage 2 inference on the production model, and Stage 3 fusion. It returned static evidence, raw uncalibrated model score, and advisory combined score distinctly. The fixture is synthetic and has no malware label. Upload checks reject missing/unsupported/empty/oversized inputs and signature mismatch; tests cover configured-auth rejection, fail-closed behavior with missing auth in non-development and production modes, loopback-only local development bypass, simulated model fallback labeling, preprocessing failure, and process timeout. When the explicit bypass is active, the server binds to `127.0.0.1` even if a non-loopback `HOST` is configured. No uploaded binary was executed.
+## Runtime evidence
 
-## Research record and dataset integrity
+### Production checkpoint
 
-The two checkpoints remain separate. The recovered notebooks report different studies: a 4,000-row image manifest with saved 67.00% scratch-CNN and 61.50% MobileNetV2 outputs; a separate later 79,997-image workflow with no completed training history; a 22-row log whose `val_auc` is always 0 and `val_precision` always 1; and a separate family-classification experiment. None proves the production checkpoint's training lineage. The ~85% result remains owner-reported and unverified. The 46-row local pilot is exploratory, has no known-malicious PE cohort, and is not a benchmark.
+`threatvision_v01.keras` SHA-256: `1e8f713db5aa0e42bb55addb02281a700028fc9fbca784b908c77a1b9cf6aaca`. It loaded with `compile=False, safe_mode=True` in the existing `threatvision` Conda environment (Python 3.11.15, TensorFlow 2.16.1, Keras 3.14.1, NumPy 1.26.4). Input shape is `(None,224,224,1)`, output shape `(None,1)`, and parameter count 2,422,084. Five deterministic synthetic probes and one harmless PE-derived probe produced finite sigmoid-range values and repeated exactly (maximum delta 0 at tolerance `1e-7`). The full JSON contains scores, fixture/tensor hashes, profile, package/backend information, and a sanitized path label.
 
-No authorized labeled PE cohort with verified provenance, immutable lineage-aware splits, and exact checkpoint links was available. Therefore, accuracy, ROC-AUC, precision, recall, F1, false-positive rate, calibration, threshold quality, and generalization remain **UNVERIFIED**. The local evaluation tooling and synthetic smoke test do not change this status.
+The separate recovered 256×256 checkpoint SHA-256 is `62feb539c30edb4b2849ac760d9b9e41c8842da000e9bfc9c653b08861173102`. It also loaded safely and passed six repeatable finite-output probes in the same environment under its distinct profile. Its PE-derived engineering input does not establish historical preprocessing parity.
 
-## Automated checks
+### Application/research preprocessing parity
 
-- Research Python tests using `/opt/miniconda3/envs/threatvision/bin/python -m unittest discover -s tests -v`: **35 passed, 0 failed**, including professor-outreach consistency checks across Markdown and DOCX artifacts, qualification checks for historical metric mentions, transitive lineage-cluster resampling coverage, and serialized output-layer verification.
-- The same research suite under `/opt/miniconda3/bin/python`: **29 passed, 1 errored** because Matplotlib is not installed in that Conda base environment. The exact requested `python3 -m unittest discover -s tests -v` used Homebrew Python 3.13.7: **27 discovered, 21 passed, 6 errored** because NumPy is absent there. No packages were installed. The local backend uses its pre-existing `threatvision` environment (Python 3.11.15, TensorFlow 2.16.1, Keras 3.14.1, NumPy 1.26.4); note that TensorFlow 2.16.1 differs from the backend's `requirements.txt` pin of 2.19.0, so this is a working local runtime, not an exact declared-dependency reproduction.
-- Backend Python tests: **6 passed** (including simulated-indicator exclusion from static results).
-- Backend Jest: **2 suites, 10 tests passed** on the latest full-suite rerun (safe HTTP validation, auth fail-closed and loopback-only guard, and actual harmless-PE inference path included). One preceding verbose run reported `write EPIPE`; the transient pipe error was not reproduced on the final run.
-- `python -m compileall -q research tests`: passed.
-- `git diff --check`: passed in research, backend and frontend repositories after the final documentation edits; no staged changes are present.
-- Vite production builds passed after the final edits in both public-demo and private-console modes, each writing to a separate `/tmp` output directory. The private-console page was rendered in headless Chrome at a 390-pixel mobile viewport: its disclaimer appeared, document width matched the viewport, and there were no browser console errors or failed requests. I also rendered the fresh public-demo build at 390 pixels: it identified itself as a research prototype, disclosed that inference was unavailable, disabled uploads/scanning, had document width equal to the viewport, and had no failed resource requests. Some illustrative sections remain long and contain clearly labeled example values; they do not present those values as scans or predictions.
-- Frontend repository lint: failed with 396 findings, including linting generated `dist-private` artifacts and source warnings/errors such as unused imports and components declared during render. The clean Vite build succeeds; lint is not a pass.
+Three deterministic harmless fixtures were compared across byte stream, bigram counts, zero-pair suppression, normalization, grayscale quantization, DCT output, 224×224 resize, and final model tensor. Shapes and dtypes matched. All per-stage hashes matched and every maximum absolute difference was `0.0`. The actual production model was run on both application and research tensors; outputs matched exactly for all three fixtures. This establishes parity between the current serving and research code only. It does not establish that either reproduces historical training preprocessing.
 
-## Public demonstration and outreach
+### Backend path and failure behavior
 
-The host `https://threatvision.amaaholding.com/` resolved and returned HTTP 200 on 18 November 2026. A real Chrome headless/CDP session loaded the rendered homepage; JavaScript and CSS assets returned HTTP 200 with no browser console errors or failed requests. A fresh 390-pixel mobile render again showed unsupported 0.970 validation AUC, 1.04M MaleX, SE-ResNet, 98.7% mock confidence, calibrated cutoff 0.380, Grad-CAM, and live threat/IoC metrics. `/demo` redirected to the homepage. `/scanner`, `/dashboard`, `/threats`, and `/history` previously redirected to `/auth`; authenticated behavior was not tested. The document width matched the mobile viewport, though wide telemetry content extends beyond the viewport within its region. GitHub and raw README returned HTTP 200. `git ls-remote` reconfirmed public `main` at `f805b8f26cc37c02d45411af27912814cd212136`; current remote README SHA-256 is `a2d161917ac9c92f78fd55a3ad0e5e3c13606b083273beeb8c96ce354f1f6f67`, while the local README is `054a7e530c669dd90eac3c7288e59b9afb8d9cf0556665db7b5c4271f30a6919`. The remote README still says production weights were not supplied and the research repository has only fourteen tests. The repository link is reachable, but the reviewed local evidence package has not been published. A current browser follow-up timed out; the preceding live-browser audit remains the last rendered-site evidence.
+The Jest integration used a generated harmless PE and exercised upload validation, static analysis, production DCT conversion, the actual checksum-pinned checkpoint, bounded fusion, and API response formatting. The neural response is labeled as an uncalibrated sigmoid score and remains separate from class confidence. Static rules determine the label and the neural score adjusts the numerical score by no more than five points. The uploaded fixture was not executed.
 
-The public read-only demo built locally is separate from the hosted site and displayed its disabled-inference notice in the prior local browser check. Do not cite the hosted application as a demo or send its URL until corrected content is published and re-audited.
+Tests cover missing, empty, corrupt-signature, unsupported-extension, oversized, missing-checkpoint, checksum-mismatch, too-short preprocessing, auth failure and invalid model output paths. Mismatched checkpoint bytes are rejected before model loading and produce no neural score. Simulated outputs are excluded from CNN fusion. The local auth bypass is loopback-only and binds to `127.0.0.1`.
 
-**Professor outreach verdict: PARTIAL.** Local evidence and materials now support an honest exploratory introduction about an undergraduate engineering prototype and the question: “Do frequency-domain neural representations add measurable predictive value beyond conventional PE static features when dataset bias, sample lineage, and generalization are properly controlled?” The owner must review and publish the local changes, then verify links before sending. Do not cite a benchmark metric or use the reachable public site as a demo while its unsupported claims remain.
+## Validation executed
 
-The professor-facing one-page summary and research prospectus were updated to reflect the completed production-checkpoint runtime verification while keeping predictive performance explicitly unverified. After the remote-state recheck, I removed stale public repository URLs from both DOCX files and their Markdown sources, disclosed that public links await owner publication/verification, and clarified that the hosted site still has unsupported claims. I refreshed both PDFs from their DOCX sources and visually reviewed the one-page summary and two-page prospectus; the prospectus keeps its recovered-provenance section together. The files are `academic-outreach/ThreatVision_One_Page_Research_Summary.docx/.pdf` and `docs/research-prospectus.docx/.pdf`.
+| Command or check | Result |
+| --- | --- |
+| `conda run -n threatvision python -m unittest discover -s tests -v` in research repo | **38 passed, 0 failed** |
+| Research `python -m compileall -q research tests` | **Passed** |
+| Research fresh-weight training CLI `--smoke --cpu` | **Passed**, one train and validation step with temporary synthetic PE-shaped fixtures and pseudo-labels explicitly not ground truth; outputs stayed under `/tmp` |
+| Research checkpoint verifier, production profile | **Passed**, six probes |
+| Research checkpoint verifier, recovered 256 profile | **Passed**, six probes |
+| Research preprocessing parity runner with real model | **Passed**, 3 fixtures × 8 preprocessing stages plus output comparison |
+| Backend Python unittest suite | **7 passed, 0 failed** |
+| Backend Jest | **2 suites, 11 tests passed** |
+| Frontend ESLint | **Passed, no findings** |
+| Frontend score helper tests | **3 passed, 0 failed** |
+| Public and private Vite builds | **Passed**, generated under `/tmp` |
+| `npm audit` | **0 vulnerabilities** |
+| `git diff --check` in research, backend, frontend | **Passed** after final report whitespace cleanup |
 
-During the current re-audit, I aligned the README and Markdown/DOCX/PDF prospectus research-question wording with the master question. I rendered and visually inspected both prospectus pages after the change; the PDF remains two US Letter pages. The live homepage was rechecked in a browser and still displays unsupported MaleX/AUC, SE-ResNet, calibrated-threshold, Grad-CAM, and live-telemetry claims. A fresh read-only remote check confirms GitHub `main` remains at `f805b8f26cc37c02d45411af27912814cd212136`, and its README SHA-256 (`a2d161…f67`) differs from the current local README (`054a7e…a6919`). The final audit added the transitive-cluster and serialized-output regression guards and reran the 34-test research suite successfully.
+Conda base uses TensorFlow 2.21.0 and NumPy 2.4.4 but lacks Matplotlib for the evaluation smoke test. Runtime probe scores differed between that TensorFlow version and TensorFlow 2.16.1; cross-runtime numerical equivalence is not claimed. The training smoke used synthetic pseudo-labels only to exercise pipeline wiring; its outputs are not classification evidence and are not included in the repository.
 
-## Final UI reconciliation pass
+## Website and public repository
 
-After the preceding local browser audit, the private-console landing copy was checked and adjusted again. The Features panel now describes the research prototype and its limits, and its configuration badge says “DOCUMENTED” instead of “VERIFIED.” The unused legacy architecture scene no longer presents fabricated results as measured: it identifies the scene as synthetic, removes the false zero-false-positive guarantee and invented latency/persistence result, and states that no file was analyzed. Remaining legacy topology examples are explicitly described as illustrative and separate from the verified production MobileNetV2 checkpoint. The live scanner now preserves the backend's simulated flag, shows no neural score when inference did not run, excludes simulated model indicators from the result, and skips persisting simulated records. Missing authentication configuration fails closed in production and unknown environments; only an explicit development/test bypass is allowed. Both Vite modes rebuilt successfully after the final UI edits. The local private page was checked at mobile width; these builds are local artifacts only and were not deployed.
+The last successful rendered live-site review, on 18 November 2026, found unsupported validation AUC, dataset, architecture, threshold, Grad-CAM, and live telemetry claims. `/demo` returned to the homepage and protected routes redirected to sign-in. On 19 November, a browser follow-up timed out, and the web open tool could not access the host; therefore the prior rendered review remains the last successful live observation. The public GitHub repository was previously confirmed behind this local state. Keep the hosted website out of professor outreach and publish nothing automatically.
 
-## Score semantics regression correction
+The local research tree contains no tracked Keras checkpoints, executable samples, private archives, or environment files. New verification JSON uses sanitized display paths; private absolute model paths and input bytes are not stored. The remote repository was not modified.
 
-The final API/UI audit found that the API's `confidence` value is the model's predicted-class confidence (for a benign prediction, it is `1 - raw sigmoid`), while several UI surfaces labeled it as the raw malware sigmoid and scaled the 0–1 value incorrectly. The Python inference payload now exposes `rawSigmoidScore`; the Node API exposes that separately as `neuralScore`, null for simulated/static-only output. The existing `confidence` field remains distinct. The active result and history views read the raw score from this field or, for stored records, `score_breakdown.cnn.raw`; unavailable values remain `N/A`. Family-profile support is labeled as a heuristic match score. Missing combined scores and entropy are no longer synthesized from verdict/confidence or hard-coded defaults. A native Node regression suite covers direct API, debug, persisted history, class-confidence separation, simulated and invalid score cases.
+## Changed files
 
-Verification after this correction: backend Python suite **6 passed** in the configured `threatvision` environment; backend Jest **10 passed** including the real-checkpoint harmless-PE endpoint assertion for `neuralScore` and the loopback-only bypass guard; frontend raw-score helper tests **3 passed**; public and private Vite builds **passed**. Homebrew Python 3.13.7 still cannot import NumPy; an attempted run there failed at dependency import and did not alter the working Python runtime. No files were staged, committed, pushed or deployed.
+New changes in this work are limited to the following areas:
 
-## Deliverables and changed areas
+- **Research code/tests:** `research/checkpoint.py`, `research/verify_model.py`, `research/train.py`, new `research/preprocessing_parity.py`, `tests/test_verify_model.py`, `tests/test_train_input.py`, and `tests/test_application_preprocessing_parity.py`.
+- **Research evidence/docs:** `README.md`, `REPRODUCIBILITY.md`, `LOCAL_IMPLEMENTATION_REPORT.md`, `docs/audits/FINAL_PROFESSOR_OUTREACH_READINESS.md`, checkpoint and parity reports/JSON, `docs/model-card.md`, `docs/model-architecture.md`, `docs/research-prospectus.md` and its DOCX/PDF, plus the academic claim policy, evidence index, project summary, and one-page summary DOCX/PDF.
+- **Backend:** `.env.example`, `python_scripts/classify_image.py`, `python_scripts/tests/test_classify_image_contract.py`, and `tests/classify.test.js`.
+- **Frontend:** no additional file edits in this report pass; the pre-existing local changes were validated and preserved.
 
-Research repo adds a shape-aware safe verifier, explicit dependency pin file, two machine-readable checkpoint reports, production verification report, experiment lineage register, final readiness report, and preprocessing parity test. It updates reproducibility guidance, model card/architecture/experimental record, README and audit crosschecks. App changes harden model contract checks, exclude simulated scores from CNN fusion, make upload validation fail closed, improve subprocess timeout handling, require explicit local-only auth bypass, and replace unsupported marketing/model claims with evidence-backed descriptions and explicit mock-data labels. Backend tests use harmless temporary fixtures and include auth failure-mode coverage.
+## Final readiness
 
-See `git status --short` in each repository for the exact unstaged changes. The application root itself has no repository, but its frontend and backend are separate Git checkouts; neither contains staged changes. No commit, push or deployment occurred.
+**Exploratory outreach: PARTIAL.** The local packet is technically specific and avoids unsupported results. The owner must review and manually publish the research changes, then verify links. Omit the website until a new live browser review shows corrected, accurate content.
 
-## Remaining blockers
-
-1. Recover authorized labeled PE data, provenance and source/lineage-aware split membership for a preregistered evaluation.
-2. Establish a verified training-to-checkpoint lineage; do not attribute historical metrics or the ~85% recollection to either checkpoint.
-3. Owner must publish the corrected public frontend and research repository, then verify that hosted claims match local evidence. Until then, exclude the public website from professor outreach; it is reachable but fails the academic accuracy review.
-4. Review the broad frontend lint debt and rerun after cleanup.
-5. Owner review and manual publication of the local changes before outreach links are sent.
-6. Before any backend deployment, configure and verify the Supabase token verifier; the local unauthenticated bypass must remain disabled in deploy environments.
+**Publishable scientific validation: BLOCKED.** Obtain a lawful, independently labeled PE cohort with traceable sources, duplicate handling, lineage/family grouping, time/source holdouts, and an exact checkpoint-linked evaluation before reporting classification metrics. Preserve the recovered 67.00%, 61.50%, 80.27% validation-log maximum, and ~85% recollection as distinct historical evidence classes; none is a production-checkpoint benchmark.

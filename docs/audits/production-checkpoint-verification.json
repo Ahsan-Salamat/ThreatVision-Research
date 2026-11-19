@@ -1,7 +1,7 @@
 {
   "status": "PASS",
   "scope": "synthetic forward-pass verification only; no classification accuracy claim",
-  "checkpoint_path": "ThreatVision Final/backend/python_scripts/model/threatvision_v01.keras",
+  "checkpoint_path": "companion production checkpoint (local copy)",
   "checkpoint_sha256": "1e8f713db5aa0e42bb55addb02281a700028fc9fbca784b908c77a1b9cf6aaca",
   "model": {
     "name": "malware_classifier",
@@ -121,39 +121,59 @@
   },
   "repeatability_tolerance": 1e-07,
   "all_cases_repeatable": true,
+  "harmless_pe_probe": {
+    "case": "harmless_pe_derived",
+    "fixture_sha256": "f250fba90998f6f49bf11fe479eb058f5f1c210825912ec2785f6dd10e0123a1",
+    "input_tensor_sha256": "341260551e2c484fac6f06130ef636ce8f0001756a733ef4a9cf215e01b505be",
+    "input_tensor_shape": [
+      1,
+      224,
+      224,
+      1
+    ],
+    "input_tensor_dtype": "float32",
+    "lineage_note": "Generated harmless PE bytes transformed by current 224x224 production preprocessing."
+  },
   "cases": {
     "zeros": {
       "output": 0.44140625,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 1309.729,
+      "first_call_ms": 827.126,
       "finite": true,
       "repeatable_within_tolerance": true
     },
     "constant_half": {
       "output": 0.410888671875,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 418.198,
+      "first_call_ms": 252.861,
       "finite": true,
       "repeatable_within_tolerance": true
     },
     "ones": {
       "output": 0.6689453125,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 615.827,
+      "first_call_ms": 251.224,
       "finite": true,
       "repeatable_within_tolerance": true
     },
     "gradient_0_to_1": {
       "output": 0.8330078125,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 448.334,
+      "first_call_ms": 221.787,
       "finite": true,
       "repeatable_within_tolerance": true
     },
     "random_0_to_1_seed42": {
       "output": 0.8193359375,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 405.888,
+      "first_call_ms": 250.565,
+      "finite": true,
+      "repeatable_within_tolerance": true
+    },
+    "harmless_pe_derived": {
+      "output": 0.41357421875,
+      "repeat_max_abs_delta": 0.0,
+      "first_call_ms": 228.397,
       "finite": true,
       "repeatable_within_tolerance": true
     }
