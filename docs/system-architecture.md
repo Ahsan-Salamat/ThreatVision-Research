@@ -13,11 +13,11 @@ ThreatVision uses a React 18/Vite/Tailwind client, a Node.js/Express API, and Py
 5. **Fusion:** weights static indicators, applies the bounded CNN score adjustment, and determines the final label from static criteria.
 6. **Reporting:** returns a dossier containing the label, threat score, indicators, hashes, static-analysis details, and generated DCT image; the frontend may persist metadata to Supabase.
 
-The documented execution order is sequential. The upload path can accept non-PE files, but the static scorer is PE-focused and the CNN's intended domain is Windows PE triage. PDF and random-byte probes described elsewhere are outside that intended domain.
+The documented execution order is sequential. The upload path can accept non-PE signatures, but the static scorer is PE-focused and the CNN's intended domain is Windows PE triage. Acceptance by a byte converter does not establish model validity for other file types.
 
 ## Decision logic
 
-Documented static component weights are dangerous imports (0.40), entropy (0.20), PE anomalies (0.20), strings (0.10), and opcode patterns (0.03), normalized over static inputs. The CNN has no authority in the final classification rule and can adjust the numeric threat score by at most five points. Static conditions and a benign score floor control the binary verdict. These are project rules, not independently calibrated thresholds. In the supplied pilot CSV, three of eight random-overlay variants and one synthetic `MZ`-plus-random probe received a malware final label; the static scorer did not neutralize every diagnostic output.
+The static component uses project-defined weights for dangerous imports (0.40), entropy (0.20), PE anomalies (0.20), strings (0.10) and opcode patterns (0.03), normalized over available static inputs. Static conditions determine the binary verdict; the CNN can adjust the numerical threat score by at most five points. These are hand-set project rules, not independently calibrated thresholds. Pilot observations are summarized once in the [experimental record](experimental-record.md).
 
 ## Reporting interface and illustrative elements
 

@@ -1,0 +1,337 @@
+{
+  "status": "PASS",
+  "scope": "implementation parity on deterministic harmless fixtures; not historical training parity or classification evidence",
+  "application_converter_sha256": "2accf477f6ec9e459fb7e169d97aaa1d05a63de5105cbc186b1af32507697d6b",
+  "research_preprocessing_sha256": "e697587e7cc27cda5445f324b50d776ffde62fd9801507422ee7e95a3acc75bc",
+  "checkpoint_sha256": "1e8f713db5aa0e42bb55addb02281a700028fc9fbca784b908c77a1b9cf6aaca",
+  "runtime": {
+    "tensorflow": "2.16.1",
+    "keras": "3.14.1"
+  },
+  "fixtures": {
+    "minimal_pe": {
+      "input_sha256": "f250fba90998f6f49bf11fe479eb058f5f1c210825912ec2785f6dd10e0123a1",
+      "input_bytes": 1024,
+      "comparisons": {
+        "byte_stream": {
+          "shape": [
+            1024
+          ],
+          "dtype": "uint8",
+          "application_sha256": "f250fba90998f6f49bf11fe479eb058f5f1c210825912ec2785f6dd10e0123a1",
+          "research_sha256": "f250fba90998f6f49bf11fe479eb058f5f1c210825912ec2785f6dd10e0123a1",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "bigram_counts": {
+          "shape": [
+            256,
+            256
+          ],
+          "dtype": "float64",
+          "application_sha256": "b19a9fb6f7a8dcadde4e8f50c3e7549fb13b9b80e3cf50f33ce527238e8aea71",
+          "research_sha256": "b19a9fb6f7a8dcadde4e8f50c3e7549fb13b9b80e3cf50f33ce527238e8aea71",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "zero_pair_suppressed": {
+          "shape": [
+            256,
+            256
+          ],
+          "dtype": "float64",
+          "application_sha256": "f5ff11d5299accd64ab85453dba5f3fb22f3e22face00616df6819e44825a6a2",
+          "research_sha256": "f5ff11d5299accd64ab85453dba5f3fb22f3e22face00616df6819e44825a6a2",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "normalized_matrix": {
+          "shape": [
+            256,
+            256
+          ],
+          "dtype": "float64",
+          "application_sha256": "ff2550e07167e85df2b393a7cdad7042d1c4169dbe64c5e5a2ad0a985ef22b0e",
+          "research_sha256": "ff2550e07167e85df2b393a7cdad7042d1c4169dbe64c5e5a2ad0a985ef22b0e",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "quantized_grayscale": {
+          "shape": [
+            256,
+            256
+          ],
+          "dtype": "uint8",
+          "application_sha256": "ef124777ba7a608977700c9df2d14533ff837fb9fc1751bed256e33764a82838",
+          "research_sha256": "ef124777ba7a608977700c9df2d14533ff837fb9fc1751bed256e33764a82838",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "dct_output": {
+          "shape": [
+            256,
+            256
+          ],
+          "dtype": "uint8",
+          "application_sha256": "b69e4e1115683fb7f872c49c6ff32b15cedc23a94bb58267a7d1afed59322aea",
+          "research_sha256": "b69e4e1115683fb7f872c49c6ff32b15cedc23a94bb58267a7d1afed59322aea",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "resized_image": {
+          "shape": [
+            224,
+            224
+          ],
+          "dtype": "uint8",
+          "application_sha256": "84d3834641d71b01ef8c62a8e68fc38b13fdfd27ba91c1308f59e5f0c6251535",
+          "research_sha256": "84d3834641d71b01ef8c62a8e68fc38b13fdfd27ba91c1308f59e5f0c6251535",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "final_model_input": {
+          "shape": [
+            1,
+            224,
+            224,
+            1
+          ],
+          "dtype": "float32",
+          "application_sha256": "341260551e2c484fac6f06130ef636ce8f0001756a733ef4a9cf215e01b505be",
+          "research_sha256": "341260551e2c484fac6f06130ef636ce8f0001756a733ef4a9cf215e01b505be",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "neural_output": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "float16",
+          "application_sha256": "2ede4cb40a0465df94959fc9ba1f0526b36f82701c8cd504c4c9e549155b03fb",
+          "research_sha256": "2ede4cb40a0465df94959fc9ba1f0526b36f82701c8cd504c4c9e549155b03fb",
+          "max_abs_delta": 0.0,
+          "exact_match": true,
+          "score": 0.41357421875,
+          "semantics": "uncalibrated_sigmoid_score"
+        }
+      }
+    },
+    "repeated_byte_range": {
+      "input_sha256": "10fc3c51a152e90e5b90319b601d92ccf37290ef53c35ff92507687d8a911a08",
+      "input_bytes": 2048,
+      "comparisons": {
+        "byte_stream": {
+          "shape": [
+            2048
+          ],
+          "dtype": "uint8",
+          "application_sha256": "10fc3c51a152e90e5b90319b601d92ccf37290ef53c35ff92507687d8a911a08",
+          "research_sha256": "10fc3c51a152e90e5b90319b601d92ccf37290ef53c35ff92507687d8a911a08",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "bigram_counts": {
+          "shape": [
+            256,
+            256
+          ],
+          "dtype": "float64",
+          "application_sha256": "55ce0d28bd30097eb0ecf24b077337f1368bd1646cef7f86f9fedb19cb4c7363",
+          "research_sha256": "55ce0d28bd30097eb0ecf24b077337f1368bd1646cef7f86f9fedb19cb4c7363",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "zero_pair_suppressed": {
+          "shape": [
+            256,
+            256
+          ],
+          "dtype": "float64",
+          "application_sha256": "55ce0d28bd30097eb0ecf24b077337f1368bd1646cef7f86f9fedb19cb4c7363",
+          "research_sha256": "55ce0d28bd30097eb0ecf24b077337f1368bd1646cef7f86f9fedb19cb4c7363",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "normalized_matrix": {
+          "shape": [
+            256,
+            256
+          ],
+          "dtype": "float64",
+          "application_sha256": "d0b449747659a3cf9aba1f6b77e33c5282cc6bc3fe92f54958de2d7ed26d65eb",
+          "research_sha256": "d0b449747659a3cf9aba1f6b77e33c5282cc6bc3fe92f54958de2d7ed26d65eb",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "quantized_grayscale": {
+          "shape": [
+            256,
+            256
+          ],
+          "dtype": "uint8",
+          "application_sha256": "769970a94cc33e5b42262e72d8f3bfd339a7e13456167421b3ddf6402b9bf51b",
+          "research_sha256": "769970a94cc33e5b42262e72d8f3bfd339a7e13456167421b3ddf6402b9bf51b",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "dct_output": {
+          "shape": [
+            256,
+            256
+          ],
+          "dtype": "uint8",
+          "application_sha256": "e807fa7a53dc699b86391ed35a29e9f17e03e6aef846530d9a03ca905fe68164",
+          "research_sha256": "e807fa7a53dc699b86391ed35a29e9f17e03e6aef846530d9a03ca905fe68164",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "resized_image": {
+          "shape": [
+            224,
+            224
+          ],
+          "dtype": "uint8",
+          "application_sha256": "63e2a19d3f7aeef9b1b8ecc4f58601277dfb355ed6c296f04bb91a67c2f55693",
+          "research_sha256": "63e2a19d3f7aeef9b1b8ecc4f58601277dfb355ed6c296f04bb91a67c2f55693",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "final_model_input": {
+          "shape": [
+            1,
+            224,
+            224,
+            1
+          ],
+          "dtype": "float32",
+          "application_sha256": "403f609409ad1598bb6fc88e0270310f737ae29212e9448157496fb590d59601",
+          "research_sha256": "403f609409ad1598bb6fc88e0270310f737ae29212e9448157496fb590d59601",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "neural_output": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "float16",
+          "application_sha256": "a63a022d4134777044c46551f18351bc25de340a2fbcf479897c0235b0552c75",
+          "research_sha256": "a63a022d4134777044c46551f18351bc25de340a2fbcf479897c0235b0552c75",
+          "max_abs_delta": 0.0,
+          "exact_match": true,
+          "score": 0.806640625,
+          "semantics": "uncalibrated_sigmoid_score"
+        }
+      }
+    },
+    "boundary_pairs": {
+      "input_sha256": "8e5141f5ea5446de302a1e56c097f533adaa97b3eda385df1263354e1127ec84",
+      "input_bytes": 300,
+      "comparisons": {
+        "byte_stream": {
+          "shape": [
+            300
+          ],
+          "dtype": "uint8",
+          "application_sha256": "8e5141f5ea5446de302a1e56c097f533adaa97b3eda385df1263354e1127ec84",
+          "research_sha256": "8e5141f5ea5446de302a1e56c097f533adaa97b3eda385df1263354e1127ec84",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "bigram_counts": {
+          "shape": [
+            256,
+            256
+          ],
+          "dtype": "float64",
+          "application_sha256": "6d405556cbbf4eec1d7d5a00624cd006eafd1fabe3a56bd8bec6a41e2c70f535",
+          "research_sha256": "6d405556cbbf4eec1d7d5a00624cd006eafd1fabe3a56bd8bec6a41e2c70f535",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "zero_pair_suppressed": {
+          "shape": [
+            256,
+            256
+          ],
+          "dtype": "float64",
+          "application_sha256": "a1bdf365bc3b082e1608ca621f2e34e5b57406a9ae9f1925d15577afa4878ffb",
+          "research_sha256": "a1bdf365bc3b082e1608ca621f2e34e5b57406a9ae9f1925d15577afa4878ffb",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "normalized_matrix": {
+          "shape": [
+            256,
+            256
+          ],
+          "dtype": "float64",
+          "application_sha256": "bc4391512b5ababdfd2867a548e1aca81634a8ded27c397f87a035264cdb4f44",
+          "research_sha256": "bc4391512b5ababdfd2867a548e1aca81634a8ded27c397f87a035264cdb4f44",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "quantized_grayscale": {
+          "shape": [
+            256,
+            256
+          ],
+          "dtype": "uint8",
+          "application_sha256": "6e835e91df1ec2221875065a17ee43ea8608d2d845f31dfd2b2f19c26d5524fe",
+          "research_sha256": "6e835e91df1ec2221875065a17ee43ea8608d2d845f31dfd2b2f19c26d5524fe",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "dct_output": {
+          "shape": [
+            256,
+            256
+          ],
+          "dtype": "uint8",
+          "application_sha256": "b2cf94819e7e9d083ed146ef8281c42c609e0733d467da4f36bcc70248c39e04",
+          "research_sha256": "b2cf94819e7e9d083ed146ef8281c42c609e0733d467da4f36bcc70248c39e04",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "resized_image": {
+          "shape": [
+            224,
+            224
+          ],
+          "dtype": "uint8",
+          "application_sha256": "8639d58fc6b9c0f40711cf78141ab2990410f9bcbe099d29e34b57b3ad454cbb",
+          "research_sha256": "8639d58fc6b9c0f40711cf78141ab2990410f9bcbe099d29e34b57b3ad454cbb",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "final_model_input": {
+          "shape": [
+            1,
+            224,
+            224,
+            1
+          ],
+          "dtype": "float32",
+          "application_sha256": "e106e3e1c9de4f4790f9ca91e52e4d2e08ad90068275eb31bd560b3f165b372b",
+          "research_sha256": "e106e3e1c9de4f4790f9ca91e52e4d2e08ad90068275eb31bd560b3f165b372b",
+          "max_abs_delta": 0.0,
+          "exact_match": true
+        },
+        "neural_output": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "float16",
+          "application_sha256": "2c305809173fb3a63ce453972f83879ad00773ec15cc89317196deb4038c87a9",
+          "research_sha256": "2c305809173fb3a63ce453972f83879ad00773ec15cc89317196deb4038c87a9",
+          "max_abs_delta": 0.0,
+          "exact_match": true,
+          "score": 0.64501953125,
+          "semantics": "uncalibrated_sigmoid_score"
+        }
+      }
+    }
+  }
+}

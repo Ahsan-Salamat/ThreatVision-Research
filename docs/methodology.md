@@ -12,6 +12,8 @@ Represent an input file as ordered bytes `B=(b₁,b₂,…,bₙ)`, where `bᵢ �
 
 This gives `M ∈ ℝ²⁵⁶ˣ²⁵⁶`. The matrix records transition frequencies; it is not described as a conditional-probability transition matrix because the implementation does not row-normalize the counts.
 
+![Byte-pair counts transformed into the model's 224 by 224 input](../figures/preprocessing-explained.svg)
+
 ## Null suppression, normalization, and quantization
 
 The implementation sets `M(0,0)=0` to suppress a repeated-null pattern associated with PE alignment padding. This is an engineering heuristic, not a general property of every file. It may also remove genuine transitions and should be isolated by ablation.
@@ -40,8 +42,8 @@ The sigmoid output is reported as a neural score, not a calibrated probability. 
 
 ## Scope of this exact preprocessing pipeline
 
-The 224×224 resize and `[0,1]` tensor normalization described above document the **current research/deployed application preprocessing path**. A recovered earlier model takes **256×256×1** input, and a later training notebook describes another 256×256 pipeline. It is not established that their input scaling, resize, augmentation and channel-adapter placement were equivalent. The research pipeline must not automatically feed the recovered earlier checkpoint with 224×224 tensors or claim that it faithfully reconstructs all historical experiments. See [model architecture](model-architecture.md) and [reconciliation audit](audits/RECOVERY_CROSSCHECK_2026-11-18.md).
+The 224×224 resize and `[0,1]` tensor normalization described above document the current research/deployed application path. The separate recovered checkpoint takes 256×256×1 input; its historical training preprocessing is unknown. Do not substitute one checkpoint's input profile for the other. See the [model card](model-card.md) and [experiment lineage](experiment-lineage.md).
 
 ## Interpretation limits
 
-The frequency image does not directly encode program intent. Packing, compression, padding, file format, and source distribution can influence byte patterns. Prior work has shown that static malware classifiers can learn packer-related signals that do not generalize to unseen packers [2]. The available pilot shows different score changes for overlays on two source files, but each overlay changes multiple properties. Whether this model uses entropy or another shortcut remains untested. A controlled evaluation is proposed in [Future research](future-research.md).
+The frequency image does not directly encode program intent. Packing, compression, padding, file format and source distribution can influence byte patterns. Prior work has shown that static malware classifiers can learn packer-related signals that do not generalize to unseen packers [2]. Whether this model adds information beyond conventional PE features remains untested; the proposed comparison is in [Future research](future-research.md).

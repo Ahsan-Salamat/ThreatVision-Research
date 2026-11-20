@@ -1,7 +1,7 @@
 {
   "status": "PASS",
   "scope": "synthetic forward-pass verification only; no classification accuracy claim",
-  "checkpoint_path": "companion production checkpoint (local copy)",
+  "checkpoint_path": "threatvision_v01.keras",
   "checkpoint_sha256": "1e8f713db5aa0e42bb55addb02281a700028fc9fbca784b908c77a1b9cf6aaca",
   "model": {
     "name": "malware_classifier",
@@ -138,42 +138,42 @@
     "zeros": {
       "output": 0.44140625,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 827.126,
+      "first_call_ms": 1660.087,
       "finite": true,
       "repeatable_within_tolerance": true
     },
     "constant_half": {
       "output": 0.410888671875,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 252.861,
+      "first_call_ms": 595.914,
       "finite": true,
       "repeatable_within_tolerance": true
     },
     "ones": {
       "output": 0.6689453125,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 251.224,
+      "first_call_ms": 940.527,
       "finite": true,
       "repeatable_within_tolerance": true
     },
     "gradient_0_to_1": {
       "output": 0.8330078125,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 221.787,
+      "first_call_ms": 448.162,
       "finite": true,
       "repeatable_within_tolerance": true
     },
     "random_0_to_1_seed42": {
       "output": 0.8193359375,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 250.565,
+      "first_call_ms": 333.019,
       "finite": true,
       "repeatable_within_tolerance": true
     },
     "harmless_pe_derived": {
       "output": 0.41357421875,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 228.397,
+      "first_call_ms": 330.085,
       "finite": true,
       "repeatable_within_tolerance": true
     }

@@ -1,67 +1,28 @@
-# Future Research
+# Proposed research plan
 
-This plan is proposed work. It begins with provenance because the pilot cannot currently be reproduced and the deployed checkpoint's training data and history are unknown. The main question is whether the existing byte-bigram/DCT representation adds useful classification information beyond simpler file statistics and PE static features.
+This plan is proposed work; no malware-classification benchmark has been completed. The primary question is: **Do byte-bigram/DCT neural representations contribute predictive information beyond conventional PE static features under leakage-resistant evaluation?**
 
-## First baseline experiment
+## First study: incremental value of the frozen neural score
 
-Begin with a frozen-score comparison requiring no CNN retraining. The hypothesis is that adding the existing neural score improves classification beyond simple statistics and static PE features.
+![Proposed research sequence from provenance recovery through controlled evaluation](../figures/research-roadmap.svg)
 
-Use lawfully obtained raw PE files with independently documented benign/malicious labels, label dates, sources, and packing status. Keep original files and all derivatives in the same partition. Remove exact duplicates and group related versions/families before creating chronological training, validation, and test partitions. Do not use this 46-row benign/synthetic pilot as a training or performance test set. Unknown overlap with the checkpoint's historical training corpus must remain an explicit limitation; a clean checkpoint-generalization claim requires that overlap to be resolved.
+Compare two models on the same independently labeled PE examples:
 
-Fit two regularized logistic regressions: A uses log file size, byte entropy, null fraction, and the same pre-specified PE features; B uses those features plus the frozen neural score. Standardize using training data only and choose regularization on validation data. Fix the test split and evaluation rule before examining test predictions. Resolve augmentation behavior and measure repeated-inference variability before caching neural scores.
+1. A regularized logistic-regression baseline using pre-specified file statistics and PE static features.
+2. The same features plus the production checkpoint's frozen neural score.
 
-Compare test PR-AUC using the same examples and report the paired difference with uncertainty resampled at the independent source/family group level, alongside per-source and packed-benign errors. Record prevalence because PR-AUC depends on it. Pre-register a practically meaningful improvement margin. An interval wholly below that margin counts against the claimed improvement; one spanning it is inconclusive, not proof of equivalence. No low-FPR certification or runtime budget is assumed. This experiment evaluates the incremental value of this checkpoint's score; it cannot establish that DCT itself is superior to raw bigrams.
+Use raw files obtained under documented terms, with independent label evidence, source and collection dates, and packing status. Resolve exact and near duplicates and assign related lineage/family samples to one partition. Use immutable train, validation and test splits with source/time holdouts where data permit. Fit scaling and select model settings on training/validation data only. Freeze the test set and metric before examining final predictions. Report a paired PR-AUC difference with uncertainty resampled by independent source or family group, plus packed-benign and per-source errors. Set a practical improvement margin in advance. An inconclusive interval is not evidence of equivalence; a null or negative result is informative.
 
-## 1. Recover and validate provenance
+Unknown overlap between a new cohort and the production checkpoint's training data remains a limitation until model lineage is recovered. This first study tests incremental value of this checkpoint's score. It does not prove that DCT is superior to raw bigrams or that the classifier generalizes to all malware.
 
-- **Hypothesis:** The deployed checkpoint and preprocessing can be identified and reproduced from recoverable artifacts.
-- **Baseline and data:** `threatvision_v01.keras`, the production preprocessing implementation, archived representative input bytes, and any recoverable training or export records.
-- **Confounders:** Missing weights or source data, changes in library versions, and undocumented training-serving differences.
-- **Measure:** Checkpoint hashes, tensor and image equivalence, and neural-score differences on fixed inputs.
-- **Falsification:** Fail the reproduction claim if exact artifact lineage or agreed input-output tolerances cannot be demonstrated. Continue to later comparisons only with a clearly identified model and preprocessing pipeline.
+## Prerequisites
 
-## 2. Establish a simple statistical baseline
+Before evaluation, identify lawful raw-file access and document data version, collection window, labels, duplicate handling, lineage, split assignments and checkpoint/preprocessing provenance. Public feature-only datasets cannot be assumed to contain the PE binaries required by the byte-to-image pipeline. If the current source cannot support the required comparisons, document the missing strata and rights issues before proposing a new collection. See [dataset provenance](dataset-provenance.md).
 
-- **Hypothesis:** Size, byte entropy, null fraction, or a one-dimensional byte histogram may account for much of the available signal.
-- **Baseline and data:** Logistic regression on pre-specified scalar statistics, followed by a 256-bin histogram model; use a lawful labeled PE collection only if raw binaries, labels, and terms are available.
-- **Confounders:** Source and time imbalance, duplicate and family leakage, label uncertainty, and packer prevalence.
-- **Measure:** PR-AUC, ROC-AUC, calibration, and TPR at pre-registered FPR operating points, with confidence intervals and per-source/per-packer results.
-- **Falsification:** The claim that frequency features add value is not supported if they fail to exceed the simpler baseline by a pre-specified meaningful margin on the same held-out examples.
+## Secondary extensions
 
-## 3. Run controlled perturbation experiments
+After the first comparison is independently reviewed, useful extensions include paired controlled perturbations, raw-bigram versus DCT inputs, temporal/source shifts, packed-benign robustness, and static-only versus combined decision rules. Each extension needs its own prespecified baseline, confounders, metric and result that would count against the hypothesis. Do not infer a single-factor entropy effect from transformations that also change size, ordering or format.
 
-- **Hypothesis:** The current score may respond to file size, entropy, or byte ordering independently of a file's original label.
-- **Baseline and data:** Paired original files and transformations with sham controls: content repetition, null padding, histogram-preserving shuffle, and overlays. Begin with known benign PE files; do not treat transformed files as malware examples.
-- **Confounders:** Each intervention can alter several byte and representation properties; transformations may invalidate a file or change its parser behavior.
-- **Measure:** Paired neural-score changes, static-feature changes, and final-label changes by intervention and source file. Report the exact transformation and byte-level checks.
-- **Falsification:** A proposed single-factor interpretation is unsupported if the transformation fails to change its intended factor or materially changes uncontrolled properties. Any entropy-specific claim requires a design that separates entropy from size, ordering, and format.
+## Sample size and operating points
 
-## 4. Compare raw bigrams and DCT representations
-
-- **Hypothesis:** The DCT representation may provide an inductive bias that improves held-out classification over raw normalized bigram matrices.
-- **Baseline and data:** Matched CNN architectures on raw bigram matrices and DCT images, trained and evaluated on identical lawful samples and splits.
-- **Confounders:** Training seeds, augmentation choices, preprocessing parity, model capacity, and split leakage.
-- **Measure:** Paired test-set differences in PR-AUC, ROC-AUC, calibration, and TPR at pre-specified FPRs, with confidence intervals across training seeds.
-- **Falsification:** Do not claim a DCT benefit if its performance difference is within the pre-registered equivalence margin or favors the raw-bigram baseline.
-
-## 5. Evaluate static-only and combined systems
-
-- **Hypothesis:** Combining neural scores with static indicators may improve triage over static analysis alone without unacceptable errors in important strata.
-- **Baseline and data:** Static-only rules and a combined scorer evaluated on the same independently labeled PE split; freeze all weights and thresholds before final testing.
-- **Confounders:** Hand-selected thresholds, class prevalence, packed benign programs, source shifts, and correlated features such as entropy appearing in both branches.
-- **Measure:** Per-class and per-stratum precision/recall, PR-AUC, calibration, decision-curve or cost-weighted errors, and exact confidence intervals for FPR and TPR.
-- **Falsification:** The combined system adds no supported value if the pre-specified improvement criterion is not met or if packed-benign errors exceed a pre-registered acceptable bound.
-
-## 6. Reconsider dataset construction only if needed
-
-- **Hypothesis:** Existing datasets may lack the raw binaries, provenance, benign packed software, or label quality needed for the controlled comparisons above.
-- **Baseline and data:** Audit candidate datasets and their terms before proposing a new collection; document which required strata and raw files are available.
-- **Confounders:** Dataset licensing, label provenance, temporal mismatch, duplicate families, and selection bias.
-- **Measure:** Coverage against a pre-specified requirements matrix and a documented feasibility/rights review.
-- **Falsification:** A new dataset is not justified if an existing lawful source supports the required comparisons with adequate provenance and strata.
-
-## Sample size and uncertainty
-
-An entirely held-out, balanced 4,000-file test set would contain 2,000 benign cases. If only half of a balanced 4,000-file collection were reserved for testing, that test partition would contain about 1,000 benign cases. Even with zero false positives among 2,000 independent benign examples, the approximate one-sided 95% upper bound is 0.0015 (the rule-of-three approximation). That sample therefore cannot establish an FPR at or below 0.001 with 95% confidence. Roughly 3,000 independent benign test cases with zero false positives are needed just to put that upper bound near 0.001; clustering by source or family and any observed errors increase the required sample. The final sample size should be calculated from a pre-specified interval width and target operating point, not fixed in advance at 4,000.
-
-Public benchmark names do not guarantee access to raw executable files suitable for the DCT pipeline. EMBER2024 documents a release of extracted features and labels; those features alone cannot be passed through ThreatVision's byte-to-DCT pipeline. BODMAS describes PE files, vectors, and metadata, but its file availability and use terms still need to be checked for the intended study [7, 11]. Confirm raw-binary access, label source, data-use terms, and safe handling before selecting either dataset. No duration is promised for the full research program; provenance recovery, data governance, model comparisons, and independent review may exceed a short laptop study.
+Choose the test-set size from the target confidence interval and operating point, accounting for source/family clustering. For example, even with zero false positives among 2,000 independent benign test cases, the approximate one-sided 95% upper bound is 0.0015 (rule of three); this does not certify a false-positive rate at or below 0.001. Errors and correlated groups require more samples. No fixed timeline is promised.

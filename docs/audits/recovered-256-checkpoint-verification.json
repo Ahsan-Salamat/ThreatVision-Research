@@ -1,7 +1,7 @@
 {
   "status": "PASS",
   "scope": "synthetic forward-pass verification only; no classification accuracy claim",
-  "checkpoint_path": "separate recovered 256 checkpoint (temporary copy)",
+  "checkpoint_path": "best_model.keras",
   "checkpoint_sha256": "62feb539c30edb4b2849ac760d9b9e41c8842da000e9bfc9c653b08861173102",
   "model": {
     "name": "ThreatVision_MobileNetV2",
@@ -125,42 +125,42 @@
     "zeros": {
       "output": 0.30231162905693054,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 677.222,
+      "first_call_ms": 1301.79,
       "finite": true,
       "repeatable_within_tolerance": true
     },
     "constant_127": {
       "output": 0.4804663360118866,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 89.497,
+      "first_call_ms": 198.197,
       "finite": true,
       "repeatable_within_tolerance": true
     },
     "constant_255": {
       "output": 0.22507219016551971,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 72.456,
+      "first_call_ms": 157.517,
       "finite": true,
       "repeatable_within_tolerance": true
     },
     "gradient_0_to_255": {
       "output": 0.49542656540870667,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 114.278,
+      "first_call_ms": 232.66,
       "finite": true,
       "repeatable_within_tolerance": true
     },
     "random_0_to_255_seed42": {
       "output": 0.7963354587554932,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 127.51,
+      "first_call_ms": 206.641,
       "finite": true,
       "repeatable_within_tolerance": true
     },
     "harmless_pe_derived_current_pipeline_resized": {
       "output": 0.2264672964811325,
       "repeat_max_abs_delta": 0.0,
-      "first_call_ms": 90.473,
+      "first_call_ms": 306.65,
       "finite": true,
       "repeatable_within_tolerance": true
     }

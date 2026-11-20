@@ -1,84 +1,37 @@
-# Deny by default; the public documentation files below are explicitly allowed.
-*
-!.gitignore
-!README.md
-!CITATION.cff
-!references.bib
-!docs/
-!docs/dataset-provenance.md
-!docs/experimental-record.md
-!docs/figures.md
-!docs/findings-and-limitations.md
-!docs/future-research.md
-!docs/methodology.md
-!docs/model-architecture.md
-!docs/model-card.md
-!docs/post-submission-investigation.md
-!docs/references.md
-!docs/research-background.md
-!docs/research-prospectus.md
-!docs/research-prospectus.docx
-!docs/system-architecture.md
+# Local/editor and Python artifacts
+.DS_Store
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.idea/
+.vscode/
 
-# Defense in depth for sensitive artifact types.
+# Secrets and local configuration
 .env
 .env.*
+!.env.example
+
+# Private data and generated outputs
+/data/
+/datasets/
+/artifacts/
+/outputs/
 *.keras
 *.h5
 *.onnx
 *.pt
 *.pth
 *.ckpt
-*.bin
 *.exe
 *.dll
+*.bin
 *.zip
 *.7z
 *.rar
-!figures/
-!figures/*.svg
 
-!figures/analyst-dashboard.png
-
-!research/
-!research/*.py
-!tests/
-!tests/*.py
-!requirements-research.txt
-!REPRODUCIBILITY.md
-!docs/audits/
-!docs/audits/*.md
-!docs/audits/checkpoint-metadata.json
-!academic-outreach/
-!academic-outreach/*.md
-!.github/
-!.github/workflows/
-!.github/workflows/research.yml
-
-!docs/audits/verified-environment.txt
-!docs/audits/production-checkpoint-verification.json
-!docs/audits/recovered-256-checkpoint-verification.json
-
-!requirements-model.txt
-
-!docs/audits/recovered-artifact-inventory.md
-
-!docs/audits/recovered-artifact-verified-summary.json
-
-# Approved, reviewed outreach handouts
-!docs/research-prospectus.pdf
-!academic-outreach/ThreatVision_One_Page_Research_Summary.docx
-!academic-outreach/ThreatVision_One_Page_Research_Summary.pdf
-!DELIVERY_NOTES.md
-
-# Only the explicitly labeled new reconstruction is distributable; exclude all original Colab notebooks.
-!notebooks/
-!notebooks/RECONSTRUCTED_MobileNetV2_Validation.ipynb
-
-!LOCAL_RECONCILIATION_REPORT.md
-!LOCAL_IMPLEMENTATION_REPORT.md
-
-!research/verify_model.py
-!tests/test_verify_model.py
-!requirements-model-verify.txt
-!tests/test_application_preprocessing_parity.py
+# Test/build products
+.coverage
+coverage/
+dist/
+build/
